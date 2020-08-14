@@ -1,0 +1,9 @@
+{
+	"extends": "@skyra/eslint-config",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "outDir": "dist"
+    },
+	"include": ["src"]
+}
