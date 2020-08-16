@@ -8,7 +8,7 @@
 
 1. Clone, and select the **staging** branch.
     ```
-    git clone https://github.com/QPS-PP2050/CoronaChat.git
+    git clone https://github.com/QPS-PP2050/CoronaChat-Server.git
     git checkout staging
     ```
 2. Create a new branch in your clone per feature.
