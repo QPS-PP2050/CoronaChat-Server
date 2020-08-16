@@ -14,7 +14,8 @@
       "start": "node dist/index.js"
   },
   "dependencies": {
-    "express.js": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
