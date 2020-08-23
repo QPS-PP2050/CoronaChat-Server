@@ -13,6 +13,11 @@ app.get('/users', (req, res) => {
 
 // Register POST request
 app.post('/users', async (req, res) => {
+    /* The email regex variable will be compared with the
+    email the user provides. The email will be considered valid
+    based on certain conditions:
+    - If there are no illegal characters
+    - If */
     var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     var compare = req.body.email.match(emailRegex);
     if (!compare) {
