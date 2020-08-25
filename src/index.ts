@@ -1,5 +1,8 @@
+import { HttpServer } from './http';
 import { ChatServer } from './ws';
+import { Api } from './api';
 
-let app = new ChatServer().app;
+const http = new HttpServer();
 
-export { app };
+new ChatServer(http.server);
+new Api(http.app);

@@ -7,11 +7,11 @@
   "author": "QPS-PP2050",
   "license": "MIT",
   "scripts": {
-      "build": "yarn tsc",
-      "rebuild": "yarn clean && yarn build",
-      "watch": "yarn tsc -w",
-      "clean": "rm -r dist",
-      "start": "node dist/index.js"
+    "build": "yarn tsc",
+    "rebuild": "yarn clean && yarn build",
+    "watch": "yarn tsc -w",
+    "clean": "rm -r dist",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@skyra/eslint-config": "^5.3.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.7",
     "@types/socket.io": "^2.1.11",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
