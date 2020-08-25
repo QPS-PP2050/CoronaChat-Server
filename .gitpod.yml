@@ -1,3 +1,4 @@
 tasks:
+  - before: printf "\n[settings]\napi_key = $WAKATIME_API_KEY\n" > ~/.wakatime.cfg
   - init: yarn install
     command: 'echo "TODO: Replace with command to start project"'
