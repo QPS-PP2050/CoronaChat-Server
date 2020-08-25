@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import type { Application } from 'express';
+import { Application } from 'express';
 
 /* The following code is to work with creating a localised database
 and creating a register and login feature that uses salt from bcrypt
@@ -37,7 +37,6 @@ export class Api {
 
     public constructor(app: Application) {
         this.app = app;
-        this.users.push({ email: "test", password: "test" })
         this.registerRoutes()
         console.log("api online")
     }
@@ -88,7 +87,7 @@ export class Api {
                     } catch {
                         /* In any odd event something goes wrong whilst the account is being 
                             created, a 500 status code will be sent */
-                        res.status(500).send();
+                        res.status(500).send('Unknown Error');
                     }
                 }
             }
