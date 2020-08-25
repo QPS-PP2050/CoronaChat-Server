@@ -1,4 +1,4 @@
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 import type { Application } from 'express';
 
@@ -67,7 +67,7 @@ export class Api {
                 return res.status(400).send('Email/username is using invalid characters');
             } else {
                 // The user's input is then searched through the local databsse to see if there is a match
-                const user = users.find(user => user.email === req.body.email);
+                const user = this.users.find(user => user.email === req.body.email);
                 if (user != null) {
                     /* If an account under than email already exists, a 400 error status code
                         will be sent along with a message telling the user that an account under
@@ -81,7 +81,7 @@ export class Api {
                         // var concat = req.body.email + req.body.password;
                         const hashedPassword = await bcrypt.hash(req.body.password, 10);
                         const user = { email: req.body.email, password: hashedPassword };
-                        users.push(user);
+                        this.users.push(user);
                         /* A 201 success status code will be sent along with a message 
                             telling the user that the account was successfully created */
                         res.status(201).send('Account created');
@@ -97,7 +97,7 @@ export class Api {
         // The following method is to login a user by seeing if a certain account exists in the database
         this.app.post('/users/login', async (req, res) => {
             // The user's input is then searched through the local databsse to see if there is a match
-            const user = users.find(user => user.email === req.body.email);
+            const user = this.users.find(user => user.email === req.body.email);
             if (user == null) {
                 /* If the account already exists, a 400 status code error will be sent
                     along with a message telling the user there is no account under that email */
