@@ -4,18 +4,18 @@ import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    username: string;
+    username: string | null = null;
 
     @Column()
-    password: string;
+    password: string | null = null;
 
     @Column()
-    email: string;
+    email: string | null = null;
 
     @Column()
-    salt: string;
+    salt: string | null = null;
 
 }

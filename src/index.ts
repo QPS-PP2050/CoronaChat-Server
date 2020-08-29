@@ -11,7 +11,7 @@ new Api(http.app);
 
 /* Example Code for how to work with TypeORM
 import {createConnection} from "typeorm";
-import {User} from "./entity/User";
+import {User} from "./orm/entity/User";
 
 createConnection().then(async connection => {
 
