@@ -11,8 +11,7 @@
       "rebuild": "yarn clean && yarn build",
       "watch": "yarn tsc -w",
       "clean": "rm -r dist",
-      "start": "ts-node src/index.ts",
-      "tscbuild": "tsc -w",
+      "start": "node dist/index.js",
       "nmstart": "nodemon dist/index.js"
    },
    "dependencies": {

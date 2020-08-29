@@ -6,16 +6,16 @@ export class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column("text")
     username: string | null = null;
 
-    @Column()
+    @Column("text")
     password: string | null = null;
 
-    @Column()
+    @Column("text")
     email: string | null = null;
 
-    @Column()
+    @Column("text")
     salt: string | null = null;
 
 }
