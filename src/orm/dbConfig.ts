@@ -5,9 +5,9 @@ export const config: ConnectionOptions = {
    type: "postgres",
    host: "localhost",
    port: 5432,
-   username: "gitpod",
+   username: "postgres",
    password: "postgresdev",
-   database: "postgres",
+   database: "coronachat",
    synchronize: true,
    logging: false,
    entities: [
