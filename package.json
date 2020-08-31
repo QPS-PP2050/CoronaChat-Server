@@ -12,7 +12,7 @@
       "watch": "yarn tsc -w",
       "clean": "rm -r dist",
       "start": "node dist/index.js",
-      "nmstart": "nodemon dist/index.js"
+      "nodemon": "nodemon dist/index.js"
    },
    "dependencies": {
       "bcrypt": "^5.0.0",
