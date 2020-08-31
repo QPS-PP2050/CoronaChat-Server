@@ -7,3 +7,5 @@ services:
     environment:
       POSTGRES_PASSWORD: postgresdev
       POSTGRES_DB: coronachat
+    ports:
+      - "5432:5432"
