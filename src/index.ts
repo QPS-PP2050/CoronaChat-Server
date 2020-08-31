@@ -11,22 +11,15 @@ new Api(http.app);
 
 import { connect } from './orm/dbConfig';
 import {User} from "./orm/entities/User";
-import { getConnection } from "typeorm";
 
 connect().then(async connection => {
-
-    await getConnection()
-        .createQueryBuilder()
-        .delete()
-        .from(User)
-        .execute();
 
     console.log("Inserting a new user into the database....");
     const user = new User();
     user.id = 1;
-    user.username = "louis-manabat";
+    user.username = "tony-baker";
     user.password = "testing123";
-    user.email = "louis@hotmail.com";
+    user.email = "tony@hotmail.com";
     await connection.manager.save(user);
     console.log("Saved a new user with id: " + user.id);
 
@@ -45,16 +38,20 @@ connect().then(async connection => {
     console.log("Adding new user: ");
     const user2 = new User();
     user2.id = 1;
-    user2.username = "louis-manabata";
+    user2.username = "johnson-chen";
     user2.password = "testing1233";
-    user2.email = "louis@hotmail.com";
+    user2.email = "ljohnson@hotmail.com";
     await connection.manager.save(user2);
     console.log("Saved a new user with id: " + user2.id);
     
 
     console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+    const allUsers = await connection
+        .createQueryBuilder()
+        .select("user")
+        .from(User, "user")
+        .orderBy("user.id", "DESC")
+        console.log("All users from newest to oldest: ", allUsers);
 
     console.log("Here you can setup and run express/koa/any other framework.");
 
