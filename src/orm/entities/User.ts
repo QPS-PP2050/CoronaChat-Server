@@ -15,7 +15,4 @@ export class User {
     @Column("text")
     email: string | null = null;
 
-    @Column("text")
-    salt: string | null = null;
-
 }
