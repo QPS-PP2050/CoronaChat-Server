@@ -31,18 +31,6 @@ connect().then(async connection => {
     await connection.manager.save(user);
     console.log("Saved a new user with id: " + user.id);
 
-
-    console.log("Loading latest user from the database...");
-    const latestUser = await connection
-        .createQueryBuilder()
-        .select("user")
-        .from(User, "user")
-        .orderBy("user.id", "DESC")
-        .limit(1)
-        .execute();
-
-    console.log("Newest user: ", latestUser);
-    
     console.log("Adding new user: ");
     const user2 = new User();
     user2.id = 1;
@@ -51,7 +39,22 @@ connect().then(async connection => {
     user2.email = "allan@hotmail.com";
     await connection.manager.save(user2);
     console.log("Saved a new user with id: " + user2.id);
-    
+
+
+    console.log("Loading latest user from the database...");
+    const latestUser = await connection
+        .createQueryBuilder()
+        .select("user.password")
+        .from(User, "user")
+        .where("user.email = :email", {email: "jayden@hotmail.com"})
+        .getRawOne();
+
+    // const username = user.username 
+    if (latestUser == undefined) {
+        console.log("Non-existent");
+    } else {
+        console.log("Newest user: ", latestUser);
+    }
 
     console.log("Loading users from the database...");
     const users = await connection.manager.find(User);

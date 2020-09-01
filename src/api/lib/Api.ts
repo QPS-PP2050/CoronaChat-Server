@@ -2,6 +2,10 @@ import * as bcrypt from 'bcrypt';
 
 import { Application } from 'express';
 
+import { connect } from '../../orm/dbConfig';
+import {User} from "../../orm/entities/User";
+//import { Connection, getConnection } from "typeorm";
+
 /* The following code is to work with creating a localised database
 and creating a register and login feature that uses salt from bcrypt
 to hash passwords to increased security.
@@ -79,8 +83,21 @@ export class Api {
                     try {
                         // var concat = req.body.email + req.body.password;
                         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-                        const user = { email: req.body.email, password: hashedPassword };
-                        this.users.push(user);
+
+                        // const user = { email: req.body.email, password: hashedPassword };
+                        // this.users.push(user);
+
+                        // Pushing to local SQL database
+                        connect().then(async connection => {
+                            const newUser = new User();
+                            newUser.id = 1;
+                            newUser.username = req.body.username;
+                            newUser.password = hashedPassword;
+                            newUser.email = req.body.email;
+                            await connection.manager.save(user);
+                        }).catch(error => console.log(error));
+                        
+
                         /* A 201 success status code will be sent along with a message 
                             telling the user that the account was successfully created */
                         res.status(201).send('Account created');
@@ -97,6 +114,20 @@ export class Api {
         this.app.post('/users/login', async (req, res) => {
             // The user's input is then searched through the local databsse to see if there is a match
             const user = this.users.find(user => user.email === req.body.email);
+            /*
+            connect().then(async connection => {
+                const getUser = await connection
+                    .createQueryBuilder()
+                    .select("user")
+                    .from(User, "user")
+                    .where("user.email = :email", {email: req.body.email})
+                    
+                    .execute();
+            }).catch(error => console.log(error));
+            //const username = "test";
+            //const password = "test";
+            */
+
             if (user == null) {
                 /* If the account already exists, a 400 status code error will be sent
                     along with a message telling the user there is no account under that email */
@@ -107,11 +138,14 @@ export class Api {
                     response will be sent telling the user that they have successfully logged in */
                 try {
                     // var concat = req.body.email + req.body.password;
-                    if (!await bcrypt.compare(req.body.password, user.password)) {
+                    // if (!await bcrypt.compare(req.body.password, user.password)) {
+                    /*
+                    if (!await bcrypt.compare(req.body.password, password )) {
                         res.send('Login failed');
                     } else {
                         res.send('Success');
                     }
+                    */
                 } catch {
                     /* In any odd event something goes wrong whilst the user is trying to
                         log in, a 500 status code will be sent */
