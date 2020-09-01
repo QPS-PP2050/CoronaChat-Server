@@ -70,11 +70,20 @@ export class Api {
                 return res.status(400).send('Email/username is using invalid characters');
             } else {
                 // The user's input is then searched through the local databsse to see if there is a match
-                const user = this.users.find(user => user.email === req.body.email);
+                // const user = this.users.find(user => user.email === req.body.email);
 
                 // add undefined check code here
+                const checkUserEmail: null;
+                connect().then(async connetion => {
+                    checkUserEmail = await connetion
+                        .createQueryBuilder()
+                        .select()
+                        .from(User, "user")
+                        .where("user.email = :email", {email: req.body.email})
+                        .getRawOne();
+                }).catch(error => console.log(error));
 
-                if (user != null) {
+                if (checkUserEmail != null) {
                     /* If an account under than email already exists, a 400 error status code
                         will be sent along with a message telling the user that an account under
                         that email exists */
