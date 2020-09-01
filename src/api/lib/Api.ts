@@ -71,6 +71,9 @@ export class Api {
             } else {
                 // The user's input is then searched through the local databsse to see if there is a match
                 const user = this.users.find(user => user.email === req.body.email);
+
+                // add undefined check code here
+
                 if (user != null) {
                     /* If an account under than email already exists, a 400 error status code
                         will be sent along with a message telling the user that an account under

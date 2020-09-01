@@ -53,7 +53,7 @@ connect().then(async connection => {
     if (latestUser == undefined) {
         console.log("Non-existent");
     } else {
-        console.log("Newest user: ", latestUser);
+        console.log("Newest user: ", latestUser.user_password);
     }
 
     console.log("Loading users from the database...");
