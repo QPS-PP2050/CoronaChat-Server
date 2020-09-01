@@ -2,9 +2,11 @@ import * as bcrypt from 'bcrypt';
 
 import { Application } from 'express';
 
-import { connect } from '../../orm/dbConfig';
-import {User} from "../../orm/entities/User";
-//import { Connection, getConnection } from "typeorm";
+import { connect } from './../../orm/dbConfig';
+import { User } from "./../../orm/entities/User";
+
+var bodyParser = require('body-parser');
+// import { getConnection } from "typeorm";
 
 /* The following code is to work with creating a localised database
 and creating a register and login feature that uses salt from bcrypt
@@ -42,11 +44,13 @@ export class Api {
     public constructor(app: Application) {
         this.app = app;
         this.registerRoutes()
+        app.use(bodyParser.json());
         console.log("api online")
     }
 
     // TODO: Implement a better Route handler
     private registerRoutes(): void {
+
         // A test method to see if the register/login methods work
         this.app.get('/users', (req, res) => {
             res.json(this.users);
@@ -54,72 +58,92 @@ export class Api {
 
         // The following method is to register a new user to a local database
         this.app.post('/users', async (req, res) => {
-            /* The email regex variable will be compared with the
-                email the user provides. The email will be considered valid
-                based on certain conditions:
-            - If there are no illegal characters (only dash and underscore allowed)
-            - If the beginning character is alphanumeric
-            - An '@' is present and does not have a dot before or after it
-            - No consecutive dots */
-            var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            // Var below will compare the user input with regex above to see if it is a valid email
-            var compare = req.body.email.match(emailRegex);
-            if (!compare) {
-                /* If email is invalid, a 400 error status code will be sent indicating 
-                    that the email format is invalid */
-                return res.status(400).send('Email/username is using invalid characters');
-            } else {
-                // The user's input is then searched through the local databsse to see if there is a match
-                // const user = this.users.find(user => user.email === req.body.email);
-
-                // add undefined check code here
-                const checkUserEmail: null;
-                connect().then(async connetion => {
-                    checkUserEmail = await connetion
-                        .createQueryBuilder()
-                        .select()
-                        .from(User, "user")
-                        .where("user.email = :email", {email: req.body.email})
-                        .getRawOne();
-                }).catch(error => console.log(error));
-
-                if (checkUserEmail != null) {
-                    /* If an account under than email already exists, a 400 error status code
-                        will be sent along with a message telling the user that an account under
-                        that email exists */
-                    return res.status(400).send('Account under that email/username already exists');
+            connect().then(async connetion => {
+                /* The email regex variable will be compared with the
+                    email the user provides. The email will be considered valid
+                    based on certain conditions:
+                - If there are no illegal characters (only dash and underscore allowed)
+                - If the beginning character is alphanumeric
+                - An '@' is present and does not have a dot before or after it
+                - No consecutive dots */
+                var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                // Var below will compare the user input with regex above to see if it is a valid email
+                var compare = req.body.email.match(emailRegex);
+                if (!compare) {
+                    /* If email is invalid, a 400 error status code will be sent indicating 
+                        that the email format is invalid */
+                    return res.status(400).send('Email/username is using invalid characters');
                 } else {
-                    /* If the email is not linked to any account, the password will be hashed
-                        using salt and the email and hashed password will be pushed to the users
-                        database */
-                    try {
-                        // var concat = req.body.email + req.body.password;
-                        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                    // The user's input is then searched through the local databsse to see if there is a match
+                    // const user = this.users.find(user => user.email === req.body.email);
 
-                        // const user = { email: req.body.email, password: hashedPassword };
-                        // this.users.push(user);
+                    // Will go through the database to see if a user exists
+                    const checkUserEmail = await connetion
+                        .createQueryBuilder()
+                        .select("user")
+                        .from(User, "user")
+                        .where("user.email = :email", { email: req.body.email })
+                        .getRawOne();
 
-                        // Pushing to local SQL database
-                        connect().then(async connection => {
-                            const newUser = new User();
-                            newUser.id = 1;
-                            newUser.username = req.body.username;
-                            newUser.password = hashedPassword;
-                            newUser.email = req.body.email;
-                            await connection.manager.save(user);
-                        }).catch(error => console.log(error));
-                        
+                    // console.log("email: ", checkUserEmail.user_email);
+                    // console.log("username: ", checkUserEmail.user_username);
 
-                        /* A 201 success status code will be sent along with a message 
-                            telling the user that the account was successfully created */
-                        res.status(201).send('Account created');
-                    } catch {
-                        /* In any odd event something goes wrong whilst the account is being 
-                            created, a 500 status code will be sent */
-                        res.status(500).send('Unknown Error');
+
+                    if (checkUserEmail != undefined) {
+                        /* If an account under than email already exists, a 400 error status code
+                            will be sent along with a message telling the user that an account under
+                            that email exists */
+                        if (checkUserEmail.user_email == req.body.email && !checkUserEmail.user_username == req.body.username) {
+                            return res.status(400).send('Account under that email already exists');
+                        } else if (checkUserEmail.user_username == req.body.username && !checkUserEmail.user_email == req.body.email) {
+                            return res.status(400).send('Account under that username already exists');
+                        } else {
+                            return res.status(400).send('Account under that email & already exists');
+                        }
+
+                    } else {
+                        // create new query search here
+
+
+                        // if() {
+
+                        // } else {
+
+                        // }
+
+                        /* If the email is not linked to any account, the password will be hashed
+                            using salt and the email and hashed password will be pushed to the users
+                            database */
+                        try {
+                            // var concat = req.body.email + req.body.password;
+                            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+                            // const user = { email: req.body.email, password: hashedPassword };
+                            // this.users.push(user);
+
+                            // Pushing to local SQL database
+                            connect().then(async connection => {
+                                const newUser = new User();
+                                newUser.id = 1;
+                                newUser.username = req.body.username;
+                                newUser.password = hashedPassword;
+                                newUser.email = req.body.email;
+                                await connection.manager.save(newUser);
+                            }).catch(error => console.log(error));
+
+
+                            /* A 201 success status code will be sent along with a message 
+                                telling the user that the account was successfully created */
+                            res.status(201).send('Account created');
+                        } catch {
+                            /* In any odd event something goes wrong whilst the account is being 
+                                created, a 500 status code will be sent */
+                            res.status(500).send('Unknown Error');
+                        }
+
                     }
                 }
-            }
+            }).catch(error => console.log(error));
         });
 
         // The following method is to login a user by seeing if a certain account exists in the database
