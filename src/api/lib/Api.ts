@@ -144,7 +144,7 @@ export class Api {
         this.app.post('/users/login', async (req, res) => {
             // The user's input is then searched through the local databsse to see if there is a match
 
-            const userAccount = checkUserEmail(req.body.email);
+            const userAccount = await checkUserEmail(req.body.email);
 
             if (userAccount == undefined) {
                 /* If the account already exists, a 400 status code error will be sent
