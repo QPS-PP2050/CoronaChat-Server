@@ -53,20 +53,19 @@ export class Api {
 
         // A test method to see if the register/login methods work
         this.app.get('/users', async (req, res) => {
-            // res.json(this.users);
             try {
                 const connection = await connect();
                 const users = await connection.manager.find(User);
                 console.log(users);
                 
-                res.json(users)
+                res.json(users);
             } catch (err) {
                 console.log(err);
                 
             }
         });
 
-        // The following method is to register a new user to a local database
+        // The following method is to register a new user to the database
         this.app.post('/users', async (req, res) => {
             
                 /* The email regex variable will be compared with the
@@ -84,7 +83,7 @@ export class Api {
                         that the email format is invalid */
                     return res.status(400).send('Email/username is using invalid characters');
                 } else {
-                    // The user's input is then searched through the local databsse to see if there is a match
+                    // The user's input is then searched through the databsse to see if there is a match
                     // const user = this.users.find(user => user.email === req.body.email);
 
                     // Will go through the database to see if a user exists
@@ -95,7 +94,7 @@ export class Api {
                     // console.log("username: ", checkUserEmail.user_username);
 
 
-                    if (userAccount != undefined) {
+                    if (await userAccount !== `undefined`) {
                         /* If an account under than email already exists, a 400 error status code
                             will be sent along with a message telling the user that an account under
                             that email exists */
@@ -145,20 +144,6 @@ export class Api {
         this.app.post('/users/login', async (req, res) => {
             // The user's input is then searched through the local databsse to see if there is a match
             const user = this.users.find(user => user.email === req.body.email);
-            /*
-            connect().then(async connection => {
-                const getUser = await connection
-                    .createQueryBuilder()
-                    .select("user")
-                    .from(User, "user")
-                    .where("user.email = :email", {email: req.body.email})
-                    
-                    .execute();
-            }).catch(error => console.log(error));
-            //const username = "test";
-            //const password = "test";
-            */
-
             if (user == null) {
                 /* If the account already exists, a 400 status code error will be sent
                     along with a message telling the user there is no account under that email */
@@ -188,13 +173,20 @@ export class Api {
         async function checkUserEmail(emailInput: String): Promise<any> {
             try {
                 const connection = await connect();
+
+                // await getConnection()
+                //     .createQueryBuilder()
+                //     .delete()
+                //     .from(User)
+                //     .execute();
+
                 const emailQuery = await connection
                     .createQueryBuilder()
                     .select("user")
                     .from(User, "user")
                     . where("user.email = :email", { email: emailInput})
                     .getRawOne();
-                    
+
                 console.log(emailQuery);
                 
                 return emailQuery;
@@ -202,18 +194,6 @@ export class Api {
                 console.log(err);
             }
         }
-
-        // Trying to make POST functions a bit cleaner by adding a modular function...
-        // Didn't work but will keep it here if can figure out how to fix it
-        // function checkEmail(email: any) {
-        //     app.post('/users', async (req, res) => {
-        //         const user = users.find(user => user.email === email);
-        //         if (user != null)
-        //             return false;
-        //         else
-        //             return true;
-        //     });
-        // };
     }
 
 }
