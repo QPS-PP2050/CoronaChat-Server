@@ -12,10 +12,6 @@ var bodyParser = require('body-parser');
 and creating a register and login feature that uses salt from bcrypt
 to hash passwords to increased security.
 
-To access the database, please visit this branch to see the online
-database that uses PostgresSQl
-*Link here* 
-
 To use and test the database:
 1. You may use Postman or use the Rest Client VSCode extenstion (ext ID: humao.rest-client).
     - Using Rest Client will allow you to use the request.rest file which is easier.
@@ -39,7 +35,6 @@ There is no limit to user accounts, so make as much as you want to test the rege
 export class Api {
 
     private app: Application;
-    // private users: { email: any; password: any; }[] = []
 
     public constructor(app: Application) {
         this.app = app;
@@ -87,12 +82,7 @@ export class Api {
                 // const user = this.users.find(user => user.email === req.body.email);
 
                 // Will go through the database to see if a user exists
-                const userAccount = checkUserEmail(req.body.email);
-
-
-                // console.log("email: ", checkUserEmail.user_email);
-                // console.log("username: ", checkUserEmail.user_username);
-
+                const userAccount = await checkUserEmail(req.body.email);
 
                 if (userAccount !== undefined) {
                     /* If an account under than email already exists, a 400 error status code
@@ -104,14 +94,9 @@ export class Api {
                         using salt and the email and hashed password will be pushed to the users
                         database */
                     try {
-                        // var concat = req.body.email + req.body.password;
                         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-                        // const user = { email: req.body.email, password: hashedPassword };
-                        // this.users.push(user);
-
                         // Pushing to local SQL database
-                        // connect().then(async connection => {
                         try {
                             const connection = await connect();
                             const newUser = new User();
@@ -124,9 +109,6 @@ export class Api {
                             console.log(err);
 
                         }
-                        // }).catch(error => console.log(error));
-
-
                         /* A 201 success status code will be sent along with a message 
                             telling the user that the account was successfully created */
                         res.status(201).send('Account created');
@@ -142,8 +124,7 @@ export class Api {
 
         // The following method is to login a user by seeing if a certain account exists in the database
         this.app.post('/users/login', async (req, res) => {
-            // The user's input is then searched through the local databsse to see if there is a match
-
+            // The user's input is then searched through the database to see if there is a match
             const userAccount = await checkUserEmail(req.body.email);
 
             if (userAccount == undefined) {
@@ -155,17 +136,12 @@ export class Api {
                     will be compared with the password the user inputted. If the passwords match, a
                     response will be sent telling the user that they have successfully logged in */
                 try {
-                    // if (!await bcrypt.compare(req.body.password, user.password)) {
-                    /*
-                    if (!await bcrypt.compare(req.body.password, password )) {
+                    if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
                         res.send('Login failed');
                     } else {
                         res.send('Success');
-                    }
-                    */
-                        if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
 
-                        }
+                    }
                 } catch {
                     /* In any odd event something goes wrong whilst the user is trying to
                         log in, a 500 status code will be sent */
