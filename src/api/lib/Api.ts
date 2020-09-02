@@ -1,12 +1,12 @@
 import * as bcrypt from 'bcrypt';
 
 import { Application } from 'express';
+import { getConnection } from 'typeorm';
 
 import { connect } from './../../orm/dbConfig';
 import { User } from "./../../orm/entities/User";
 
 var bodyParser = require('body-parser');
-// import { getConnection } from "typeorm";
 
 /* The following code is to work with creating a localised database
 and creating a register and login feature that uses salt from bcrypt
@@ -52,13 +52,23 @@ export class Api {
     private registerRoutes(): void {
 
         // A test method to see if the register/login methods work
-        this.app.get('/users', (req, res) => {
-            res.json(this.users);
+        this.app.get('/users', async (req, res) => {
+            // res.json(this.users);
+            try {
+                const connection = await connect();
+                const users = await connection.manager.find(User);
+                console.log(users);
+                
+                res.json(users)
+            } catch (err) {
+                console.log(err);
+                
+            }
         });
 
         // The following method is to register a new user to a local database
         this.app.post('/users', async (req, res) => {
-            connect().then(async connetion => {
+            
                 /* The email regex variable will be compared with the
                     email the user provides. The email will be considered valid
                     based on certain conditions:
@@ -78,39 +88,19 @@ export class Api {
                     // const user = this.users.find(user => user.email === req.body.email);
 
                     // Will go through the database to see if a user exists
-                    const checkUserEmail = await connetion
-                        .createQueryBuilder()
-                        .select("user")
-                        .from(User, "user")
-                        .where("user.email = :email", { email: req.body.email })
-                        .getRawOne();
+                    const userAccount = checkUserEmail(req.body.email);
+                    
 
                     // console.log("email: ", checkUserEmail.user_email);
                     // console.log("username: ", checkUserEmail.user_username);
 
 
-                    if (checkUserEmail != undefined) {
+                    if (userAccount != undefined) {
                         /* If an account under than email already exists, a 400 error status code
                             will be sent along with a message telling the user that an account under
                             that email exists */
-                        if (checkUserEmail.user_email == req.body.email && !checkUserEmail.user_username == req.body.username) {
-                            return res.status(400).send('Account under that email already exists');
-                        } else if (checkUserEmail.user_username == req.body.username && !checkUserEmail.user_email == req.body.email) {
-                            return res.status(400).send('Account under that username already exists');
-                        } else {
-                            return res.status(400).send('Account under that email & already exists');
-                        }
-
+                        return res.status(400).send('Account under that email already exists');
                     } else {
-                        // create new query search here
-
-
-                        // if() {
-
-                        // } else {
-
-                        // }
-
                         /* If the email is not linked to any account, the password will be hashed
                             using salt and the email and hashed password will be pushed to the users
                             database */
@@ -122,14 +112,20 @@ export class Api {
                             // this.users.push(user);
 
                             // Pushing to local SQL database
-                            connect().then(async connection => {
+                            // connect().then(async connection => {
+                            try {
+                                const connection = await connect();
                                 const newUser = new User();
                                 newUser.id = 1;
                                 newUser.username = req.body.username;
                                 newUser.password = hashedPassword;
                                 newUser.email = req.body.email;
                                 await connection.manager.save(newUser);
-                            }).catch(error => console.log(error));
+                            } catch (err) {
+                                console.log(err);
+                                
+                            }
+                            // }).catch(error => console.log(error));
 
 
                             /* A 201 success status code will be sent along with a message 
@@ -143,7 +139,6 @@ export class Api {
 
                     }
                 }
-            }).catch(error => console.log(error));
         });
 
         // The following method is to login a user by seeing if a certain account exists in the database
@@ -190,6 +185,23 @@ export class Api {
             }
         });
 
+        async function checkUserEmail(emailInput: String): Promise<any> {
+            try {
+                const connection = await connect();
+                const emailQuery = await connection
+                    .createQueryBuilder()
+                    .select("user")
+                    .from(User, "user")
+                    . where("user.email = :email", { email: emailInput})
+                    .getRawOne();
+                    
+                console.log(emailQuery);
+                
+                return emailQuery;
+            } catch (err) {
+                console.log(err);
+            }
+        }
 
         // Trying to make POST functions a bit cleaner by adding a modular function...
         // Didn't work but will keep it here if can figure out how to fix it
