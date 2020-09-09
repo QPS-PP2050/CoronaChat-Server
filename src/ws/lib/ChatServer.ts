@@ -25,10 +25,13 @@ export class ChatServer {
     private listen(): void {
         //socket events
         this.io.on(ChatEvent.CONNECT, (socket: any) => {
-            console.log('Connected client on port %s.', this.port); socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
+            console.log(this.io.sockets.sockets);
+            console.log('Connected client on port %s.', this.port);
+            socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log('[server](message): %s', JSON.stringify(m));
                 this.io.emit('message', m);
-            }); socket.on(ChatEvent.DISCONNECT, () => {
+            });
+            socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
             });
         });

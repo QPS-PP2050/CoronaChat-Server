@@ -2,19 +2,19 @@ import "reflect-metadata";
 
 import { HttpServer } from './http';
 import { ChatServer } from './ws';
-import { Api } from './api';
+// import { Api } from './api';
 
 const http = new HttpServer();
 
 new ChatServer(http.server);
-new Api(http.app);
+// new Api(http.app);
 
 // Example Code for how to work with TypeORM
-import { connect } from './orm/dbConfig';
+// import { connect } from './orm/dbConfig';
 // import {User} from "./orm/entities/User";
 // import { getConnection } from "typeorm";
 
-connect().then(async connection => {
+/* connect().then(async connection => {
 
     // await getConnection()
     //     .createQueryBuilder()
@@ -62,4 +62,4 @@ connect().then(async connection => {
 
     // console.log("Here you can setup and run express/koa/any other framework.");
 
-}).catch(error => console.log(error));
+}).catch(error => console.log(error)); */

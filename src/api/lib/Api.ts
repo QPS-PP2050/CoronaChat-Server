@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 
 import { Application } from 'express';
-import { getConnection } from 'typeorm';
+// import { getConnection } from 'typeorm';
 
 import { connect } from './../../orm/dbConfig';
 import { User } from "./../../orm/entities/User";
