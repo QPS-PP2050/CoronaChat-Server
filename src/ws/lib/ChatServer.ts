@@ -36,6 +36,11 @@ export class ChatServer {
                 this.io.emit('message', m);
             });
             socket.on(ChatEvent.DISCONNECT, () => {
+                this.io.clients((err: any, clients: []) => {
+                if (err) throw err;
+                console.log(clients)
+                this.io.emit(ChatEvent.MEMBERLIST, clients);
+            })
                 console.log('Client disconnected');
             });
         });
