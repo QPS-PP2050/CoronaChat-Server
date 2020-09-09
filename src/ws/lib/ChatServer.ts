@@ -25,7 +25,11 @@ export class ChatServer {
     private listen(): void {
         //socket events
         this.io.on(ChatEvent.CONNECT, (socket: any) => {
-            console.log(this.io.sockets.sockets);
+            this.io.clients((err: any, clients: []) => {
+                if (err) throw err;
+                console.log(clients)
+                this.io.emit(ChatEvent.MEMBERLIST, clients);
+            })
             console.log('Connected client on port %s.', this.port);
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log('[server](message): %s', JSON.stringify(m));
