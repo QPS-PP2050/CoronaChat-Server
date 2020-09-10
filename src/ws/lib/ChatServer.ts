@@ -1,23 +1,19 @@
-import * as express from 'express';
-import * as socketIO from 'socket.io';
-import { createServer, Server } from 'http';
-
+import { HttpServer } from '../../http/lib/HttpServer';
 import { ChatEvent } from './Constants';
+import * as socketIO from 'socket.io';
+
 import type { ChatMessage } from './types/ChatMessage';
+import type { Server } from 'http';
 
 export class ChatServer {
 
-    public static readonly PORT: number = 8080;
-
-    private _app: express.Application;
     private server: Server;
-    private io!: SocketIO.Server;
     private port: string | number;
+    private io!: SocketIO.Server;
 
-    public constructor() {
-        this._app = express();
-        this.port = process.env.PORT || ChatServer.PORT;
-        this.server = createServer(this._app);
+    public constructor(server: Server) {
+        this.server = server;
+        this.port = HttpServer.PORT;
         this.initSocket();
         this.listen();
     }
@@ -27,23 +23,26 @@ export class ChatServer {
     }
 
     private listen(): void {
-        // server listening on our defined port
-        this.server.listen(this.port, () => {
-            console.log('Running server on port %s', this.port);
-        });   
-        
         //socket events
         this.io.on(ChatEvent.CONNECT, (socket: any) => {
-            console.log('Connected client on port %s.', this.port); socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
+            this.io.clients((err: any, clients: []) => {
+                if (err) throw err;
+                console.log(clients)
+                this.io.emit(ChatEvent.MEMBERLIST, clients);
+            })
+            console.log('Connected client on port %s.', this.port);
+            socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log('[server](message): %s', JSON.stringify(m));
                 this.io.emit('message', m);
-            }); socket.on(ChatEvent.DISCONNECT, () => {
+            });
+            socket.on(ChatEvent.DISCONNECT, () => {
+                this.io.clients((err: any, clients: []) => {
+                if (err) throw err;
+                console.log(clients)
+                this.io.emit(ChatEvent.MEMBERLIST, clients);
+            })
                 console.log('Client disconnected');
             });
         });
-    }
-
-    get app(): express.Application {
-        return this._app;
     }
 }

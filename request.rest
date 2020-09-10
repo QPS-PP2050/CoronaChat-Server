@@ -1,0 +1,25 @@
+// Show users request
+GET http://localhost:8080/users
+
+###
+
+// Register request
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "username": "testing",
+    "email": "louis@hotmail.com",
+    "password": "testPassword"
+}
+
+###
+
+// Login request
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+    "email": "louis@hotmail.com",
+    "password": "testPassword"
+}
