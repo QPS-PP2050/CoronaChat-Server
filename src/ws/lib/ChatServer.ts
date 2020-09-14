@@ -1,19 +1,20 @@
-import { HttpServer } from '../../http/lib/HttpServer';
+import { HttpsServer } from '../../https/lib/HttpsServer';
 import { ChatEvent } from './Constants';
 import * as socketIO from 'socket.io';
 
 import type { ChatMessage } from './types/ChatMessage';
-import type { Server } from 'http';
+import type { Server } from 'https';
+import type { Server as aServer } from 'http';
 
 export class ChatServer {
 
-    private server: Server;
+    private server: Server | aServer;
     private port: string | number;
     private io!: SocketIO.Server;
 
-    public constructor(server: Server) {
+    public constructor(server: Server | aServer) {
         this.server = server;
-        this.port = HttpServer.PORT;
+        this.port = HttpsServer.PORT;
         this.initSocket();
         this.listen();
     }

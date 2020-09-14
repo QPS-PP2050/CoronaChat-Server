@@ -1,12 +1,12 @@
 import "reflect-metadata";
 
-import { HttpServer } from './http';
+import { HttpsServer } from './https';
 import { ChatServer } from './ws';
 // import { Api } from './api';
 
-const http = new HttpServer();
+const https = new HttpsServer();
 
-new ChatServer(http.server);
+new ChatServer(https.server);
 // new Api(http.app);
 
 // Example Code for how to work with TypeORM
