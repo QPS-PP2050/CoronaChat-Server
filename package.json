@@ -12,7 +12,8 @@
       "watch": "yarn tsc -w",
       "clean": "rm -r dist",
       "start": "node dist/index.js",
-      "nodemon": "nodemon dist/index.js"
+      "nodemon": "nodemon dist/index.js",
+      "ssl": "openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert"
    },
    "dependencies": {
       "bcrypt": "^5.0.0",
