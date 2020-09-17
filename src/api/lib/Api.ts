@@ -166,6 +166,7 @@ export class Api {
         */
         async function checkUserEmail(emailInput: String): Promise<any> {
             try {
+                // Establishes connection
                 const connection = await connect();
 
                 // await getConnection()
