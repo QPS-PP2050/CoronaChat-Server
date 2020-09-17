@@ -66,21 +66,27 @@ export class Api {
             var compare = req.body.username.match(usernameRegex);
 
             if (!compare) {
-                /* If username is invalid, a 400 error status code will be sent indicating 
-                    that the username format is invalid */
+                /*
+                If username is invalid, a 400 error status code will be sent indicating 
+                    that the username format is invalid.
+                */
                 return res.status(400).send('Username is using invalid characters');
             } else {
                 // The user's input is then searched through the database to see if there is a match
                 const userAccount = await checkUsername(req.body.username);
 
                 if (userAccount !== undefined) {
-                    /* If an account under than username already exists, a 400 error status code
+                    /*
+                    If an account under than username already exists, a 400 error status code
                         will be sent along with a message telling the user that an account under
-                        that username exists. */
+                        that username exists.
+                    */
                     return res.status(400).send('That username already exists');
                 } else {
-                    /* If the username is not linked to any account, the current username will be replaced
-                        with the user's new chosen username which will be updated in database. */
+                    /* 
+                    If the username is not linked to any account, the current username will be replaced
+                        with the user's new chosen username which will be updated in database.
+                    */
                     try {
 
                         // Updating the local SQL database
@@ -91,21 +97,27 @@ export class Api {
                             .where("id = :id", { id: req.body.id })
                             .execute();
 
-                        /* A 201 success status code will be sent along with a message 
-                            telling the user that the account was successfully created. */
+                        /*
+                        A 201 success status code will be sent along with a message 
+                            telling the user that the account was successfully created.
+                        */
                         return res.status(201).send("Username changed");
                     } catch (err) {
-                        /* In any odd event something goes wrong whilst the account is being 
-                            created, a 500 status code will be sent. */
+                        /* 
+                        In any odd event something goes wrong whilst the account is being 
+                            created, a 500 status code will be sent.
+                        */
                         console.log(err);
                     }
                 }
             }
         });
 
-        /* The checkUsername function searches through the database and checks if an account with 
+        /* 
+        The checkUsername function searches through the database and checks if an account with 
             the username exists. It will return a user if it finds a match. Otherwise, it will
-            return undefined. */
+            return undefined.
+        */
         async function checkUsername(usernameInput: String): Promise<any> {
             try {
                 // Establishes connection
