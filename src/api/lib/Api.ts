@@ -6,29 +6,21 @@ import { User } from "./../../orm/entities/User";
 
 var bodyParser = require('body-parser');
 
-/* The following code is to work with creating a localised database
-and creating a register and login feature that uses salt from bcrypt
-to hash passwords to increased security.
+/* The following code works on changing the account's username
 
 To use and test the database:
 1. You may use Postman or use the Rest Client VSCode extenstion (ext ID: humao.rest-client).
     - Using Rest Client will allow you to use the request.rest file which is easier.
-2. In one terminal, run "npm run build" then run "npm run start" in another terminal 
+2. In one terminal, run "yarn watch" then run "yarn nodemon" in another terminal 
 3. Open up the request.rest file (if using an alternative app, refer to the request.rest
     file to see what you need to do).
 4. If the Rest Client is installed, above the POST request link, there is a button that
     says "Send Request".
-5. To test user registration, send a reuqest under the register request comment. You should
-    be notified that an account has been made and pressing it again should tell an account has
-    already been made under that email.
-6. To check, send a request under the show users request comment to see the list of user emails
-    and hashed passwords.
-7. To test the login feature, send a request under the login request comment. By default, the
-    email and password for the register and login request are the same, so login will be succesful.
-    If you change the login details and no such info exists, it will respond saying it doesn't exist.
-
-There is no limit to user accounts, so make as much as you want to test the regex. Please do note
-    that the list empties out upon terminating the program. */
+5. To test username change, send a request under the change username request comment. You should
+    be notified that the username for that account has been changed and pressing it again shoul tell
+    that said username already exists.
+6. To check, send a request under the show users request comment to see the list of users 
+    and their details. */
 
 export class Api {
 
