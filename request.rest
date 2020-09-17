@@ -1,10 +1,10 @@
 // Show users request
-GET http://localhost:8080/users
+GET https://localhost:8080/users
 
 ###
 
 // Change username request
-POST http://localhost:8080/users/changeusername
+POST https://localhost:8080/users/changeusername
 Content-Type: application/json
 
 {
