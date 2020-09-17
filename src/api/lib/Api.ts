@@ -45,7 +45,6 @@ export class Api {
 
     // TODO: Implement a better Route handler
     private registerRoutes(): void {
-
         // A test method to see if the register/login methods work
         this.app.get('/users', async (req, res) => {
             try {
@@ -101,13 +100,12 @@ export class Api {
                             const connection = await connect();
                             const newUser = new User();
                             newUser.id = 1;
-                            newUser.username = req.body.username;
+                            newUser.username = "undefined";
                             newUser.password = hashedPassword;
                             newUser.email = req.body.email;
                             await connection.manager.save(newUser);
                         } catch (err) {
                             console.log(err);
-
                         }
                         /* A 201 success status code will be sent along with a message 
                             telling the user that the account was successfully created */
@@ -167,7 +165,7 @@ export class Api {
                     .where("user.email = :email", { email: emailInput })
                     .getRawOne();
 
-                console.log(emailQuery);
+                // console.log(emailQuery);
 
                 return emailQuery;
             } catch (err) {
@@ -175,5 +173,6 @@ export class Api {
             }
         }
     }
+
 
 }
