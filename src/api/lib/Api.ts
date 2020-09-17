@@ -1,7 +1,5 @@
-import * as bcrypt from 'bcrypt';
-
 import { Application } from 'express';
-// import { getConnection } from 'typeorm';
+import { getConnection } from 'typeorm';
 
 import { connect } from './../../orm/dbConfig';
 import { User } from "./../../orm/entities/User";
@@ -50,7 +48,6 @@ export class Api {
             try {
                 const connection = await connect();
                 const users = await connection.manager.find(User);
-                console.log(users);
 
                 res.json(users);
             } catch (err) {
@@ -60,95 +57,39 @@ export class Api {
         });
 
         // The following method is to register a new user to the database
-        this.app.post('/users', async (req, res) => {
+        this.app.post('/users/changeuser', async (req, res) => {
 
-            /* The email regex variable will be compared with the
-                email the user provides. The email will be considered valid
-                based on certain conditions:
-            - If there are no illegal characters (only dash and underscore allowed)
-            - If the beginning character is alphanumeric
-            - An '@' is present and does not have a dot before or after it
-            - No consecutive dots */
-            var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            // Var below will compare the user input with regex above to see if it is a valid email
-            var compare = req.body.email.match(emailRegex);
+            var usernameRegex = /^\D[a-z0-9]{8,16}$/;
+
+            var compare = req.body.username.match(usernameRegex);
+
             if (!compare) {
-                /* If email is invalid, a 400 error status code will be sent indicating 
-                    that the email format is invalid */
-                return res.status(400).send('Email/username is using invalid characters');
-            } else {
-                // The user's input is then searched through the databsse to see if there is a match
-                // const user = this.users.find(user => user.email === req.body.email);
 
-                // Will go through the database to see if a user exists
-                const userAccount = await checkUserEmail(req.body.email);
+                return res.status(400).send('Username is using invalid characters');
+            } else {
+
+                const userAccount = await checkUsername(req.body.username);
 
                 if (userAccount !== undefined) {
-                    /* If an account under than email already exists, a 400 error status code
-                        will be sent along with a message telling the user that an account under
-                        that email exists */
-                    return res.status(400).send('Account under that email already exists');
+                    return res.status(400).send('That username already exists');
                 } else {
-                    /* If the email is not linked to any account, the password will be hashed
-                        using salt and the email and hashed password will be pushed to the users
-                        database */
                     try {
-                        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                        await getConnection()
+                            .createQueryBuilder()
+                            .update(User)
+                            .set({ username: req.body.username })
+                            .where("id = :id", { id: req.body.id })
+                            .execute();
 
-                        // Pushing to local SQL database
-                        try {
-                            const connection = await connect();
-                            const newUser = new User();
-                            newUser.id = 1;
-                            newUser.username = "undefined";
-                            newUser.password = hashedPassword;
-                            newUser.email = req.body.email;
-                            await connection.manager.save(newUser);
-                        } catch (err) {
-                            console.log(err);
-                        }
-                        /* A 201 success status code will be sent along with a message 
-                            telling the user that the account was successfully created */
-                        res.status(201).send('Account created');
-                    } catch {
-                        /* In any odd event something goes wrong whilst the account is being 
-                            created, a 500 status code will be sent */
-                        res.status(500).send('Unknown Error');
+                        return res.status(201).send("Username changed");
+                    } catch (err) {
+                        console.log(err);
                     }
-
                 }
             }
         });
 
-        // The following method is to login a user by seeing if a certain account exists in the database
-        this.app.post('/users/login', async (req, res) => {
-            // The user's input is then searched through the database to see if there is a match
-            const userAccount = await checkUserEmail(req.body.email);
-
-            if (userAccount == undefined) {
-                /* If the account already exists, a 400 status code error will be sent
-                    along with a message telling the user there is no account under that email */
-                return res.status(400).send('Account under this email/username does not exist');
-            } else {
-                /* If the email exists in the database, the database hashed password
-                    will be compared with the password the user inputted. If the passwords match, a
-                    response will be sent telling the user that they have successfully logged in */
-                try {
-                    if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
-                        res.send('Login failed');
-                    } else {
-                        res.send('Success');
-
-                    }
-                } catch {
-                    /* In any odd event something goes wrong whilst the user is trying to
-                        log in, a 500 status code will be sent */
-                    res.status(500).send();
-                }
-            }
-        });
-
-        async function checkUserEmail(emailInput: String): Promise<any> {
+        async function checkUsername(usernameInput: String): Promise<any> {
             try {
                 const connection = await connect();
 
@@ -158,16 +99,16 @@ export class Api {
                 //     .from(User)
                 //     .execute();
 
-                const emailQuery = await connection
+                const userQuery = await connection
                     .createQueryBuilder()
                     .select("user")
                     .from(User, "user")
-                    .where("user.email = :email", { email: emailInput })
+                    .where("user.username = :username", { username: usernameInput })
                     .getRawOne();
 
-                // console.log(emailQuery);
+                // console.log(userQuery.password);
 
-                return emailQuery;
+                return userQuery;
             } catch (err) {
                 console.log(err);
             }
