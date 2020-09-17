@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 import { Application } from 'express';
 import { getConnection } from 'typeorm';
 
