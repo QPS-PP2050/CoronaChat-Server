@@ -16,7 +16,7 @@ to hash passwords to increased security.
 To use and test the database:
 1. You may use Postman or use the Rest Client VSCode extenstion (ext ID: humao.rest-client).
     - Using Rest Client will allow you to use the request.rest file which is easier.
-2. In one terminal, run "yarn watch" then run "yarn nodemon" in another terminal 
+2. In one terminal, run "yarn watch" then run "yarn nodemon" in another terminal.
 3. Open up the request.rest file (if using an alternative app, refer to the request.rest
     file to see what you need to do).
 4. If the Rest Client is installed, above the POST request link, there is a button that
@@ -60,13 +60,15 @@ export class Api {
         // The following method is to register a new user to the database
         this.app.post('/users', async (req, res) => {
 
-            /* The email regex variable will be compared with the
+            /* 
+            The email regex variable will be compared with the
                 email the user provides. The email will be considered valid
                 based on certain conditions:
             - If there are no illegal characters (only dash and underscore allowed)
             - If the beginning character is alphanumeric
             - An '@' is present and does not have a dot before or after it
-            - No consecutive dots */
+            - No consecutive dots 
+            */
             var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             // Var below will compare the user input with regex above to see if it is a valid email
             var compare = req.body.email.match(emailRegex);
@@ -75,21 +77,22 @@ export class Api {
                     that the email format is invalid */
                 return res.status(400).send('Email/username is using invalid characters');
             } else {
-                // The user's input is then searched through the databsse to see if there is a match
-                // const user = this.users.find(user => user.email === req.body.email);
-
                 // Will go through the database to see if a user exists
                 const userAccount = await checkUserEmail(req.body.email);
 
                 if (userAccount !== undefined) {
-                    /* If an account under than email already exists, a 400 error status code
+                    /* 
+                    If an account under than email already exists, a 400 error status code
                         will be sent along with a message telling the user that an account under
-                        that email exists */
+                        that email exists.
+                    */
                     return res.status(400).send('Account under that email already exists');
                 } else {
-                    /* If the email is not linked to any account, the password will be hashed
+                    /*
+                    If the email is not linked to any account, the password will be hashed
                         using salt and the email and hashed password will be pushed to the users
-                        database */
+                        database.
+                    */
                     try {
                         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -105,12 +108,16 @@ export class Api {
                         } catch (err) {
                             console.log(err);
                         }
-                        /* A 201 success status code will be sent along with a message 
-                            telling the user that the account was successfully created */
+                        /* 
+                        A 201 success status code will be sent along with a message 
+                            telling the user that the account was successfully created.
+                        */
                         res.status(201).send('Account created');
                     } catch {
-                        /* In any odd event something goes wrong whilst the account is being 
-                            created, a 500 status code will be sent */
+                        /* 
+                        In any odd event something goes wrong whilst the account is being 
+                            created, a 500 status code will be sent.
+                        */
                         res.status(500).send('Unknown Error');
                     }
 
@@ -124,13 +131,17 @@ export class Api {
             const userAccount = await checkUserEmail(req.body.email);
 
             if (userAccount == undefined) {
-                /* If the account already exists, a 400 status code error will be sent
-                    along with a message telling the user there is no account under that email */
+                /*
+                If the account already exists, a 400 status code error will be sent along with 
+                    a message telling the user there is no account under that email.
+                */
                 return res.status(400).send('Account under this email/username does not exist');
             } else {
-                /* If the email exists in the database, the database hashed password
+                /* 
+                If the email exists in the database, the database hashed password
                     will be compared with the password the user inputted. If the passwords match, a
-                    response will be sent telling the user that they have successfully logged in */
+                    response will be sent telling the user that they have successfully logged in.
+                */
                 try {
                     if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
                         res.send('Login failed');
@@ -139,13 +150,20 @@ export class Api {
 
                     }
                 } catch {
-                    /* In any odd event something goes wrong whilst the user is trying to
-                        log in, a 500 status code will be sent */
+                    /* 
+                    In any odd event something goes wrong whilst the user is trying to
+                        log in, a 500 status code will be sent.
+                    */
                     res.status(500).send();
                 }
             }
         });
 
+        /* 
+        The checkUserEmail function searches through the database and checks if an account with 
+            the email exists. It will return a user if it finds a match. Otherwise, it will
+            return undefined.
+        */
         async function checkUserEmail(emailInput: String): Promise<any> {
             try {
                 const connection = await connect();
@@ -165,6 +183,7 @@ export class Api {
 
                 // console.log(emailQuery);
 
+                // Returns undefined if no match
                 return emailQuery;
             } catch (err) {
                 console.log(err);
