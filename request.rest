@@ -3,7 +3,7 @@ GET https://localhost:8080/users
 
 ###
 
-// Change username request
+// Change email request
 POST https://localhost:8080/users/changeemail
 Content-Type: application/json
 
