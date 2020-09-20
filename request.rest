@@ -3,11 +3,11 @@ GET https://localhost:8080/users
 
 ###
 
-// Change username request
-POST https://localhost:8080/users/changeusername
+// Change password request
+POST https://localhost:8080/users/changepassword
 Content-Type: application/json
 
 {
-    "username": "louismanabat",
+    "password": "testingPassword",
     "id": 24
 }
