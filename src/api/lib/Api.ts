@@ -37,7 +37,7 @@ export class Api {
 
     // TODO: Implement a better Route handler
     private registerRoutes(): void {
-        // A test method to see if the register/login methods work
+        // A temp method that shows all the user's details
         this.app.get('/users', async (req, res) => {
             try {
                 const connection = await connect();
