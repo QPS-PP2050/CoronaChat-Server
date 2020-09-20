@@ -4,10 +4,10 @@ GET https://localhost:8080/users
 ###
 
 // Change username request
-POST https://localhost:8080/users/changeusername
+POST https://localhost:8080/users/changeemail
 Content-Type: application/json
 
 {
-    "username": "louismanabat",
+    "email": "louis@hotmail.com",
     "id": 24
 }
