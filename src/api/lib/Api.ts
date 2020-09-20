@@ -61,7 +61,7 @@ export class Api {
             - An '@' is present and does not have a dot before or after it
             - No consecutive dots 
             */
-           var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             // Var below will compare the user input with regex above to see if it is a valid email
             var compare = req.body.email.match(emailRegex);
 
@@ -145,6 +145,4 @@ export class Api {
             }
         }
     }
-
-
 }
