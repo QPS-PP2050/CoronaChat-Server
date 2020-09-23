@@ -159,6 +159,15 @@ export class Api {
             }
         });
 
+        this.app.post('/servers', async (req, res) => {
+            // What payload do we expect here?
+            /* 
+                {
+                    server_name: "servername",
+                    owner_id: "ownerid"
+                }
+            */
+        })
         /* 
         The checkUserEmail function searches through the database and checks if an account with 
             the email exists. It will return a user if it finds a match. Otherwise, it will
