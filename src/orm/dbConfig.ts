@@ -28,7 +28,7 @@ const prodConfig: ConnectionOptions = {
 
 const devConfig: ConnectionOptions = { 
    type: "postgres",
-   host: "localhost",
+   host: "coronachat.xyz",
    port: 5432,
    username: "coronachat",
    password: "coronachat",
