@@ -17,3 +17,5 @@ router.post('/channels/', (req, res) => {
 router.delete('channels/:channelId', (req, res) => {
     // Placeholder to delete channel
 })
+
+export default router;
