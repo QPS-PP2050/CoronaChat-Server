@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Server } from './../../../orm/entities/Server';
-import { connect } from './../../../orm/dbConfig';
+// import { Server } from './../../../orm/entities/Server';
+// import { connect } from './../../../orm/dbConfig';
 
 const router = Router();
 

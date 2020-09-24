@@ -60,8 +60,6 @@ router.post('/users', async (req, res) => {
                 try {
                     const connection = await connect();
                     const newUser = new User();
-                    newUser.id = 1;
-                    newUser.username = "undefined";
                     newUser.password = hashedPassword;
                     newUser.email = req.body.email;
                     await connection.manager.save(newUser);

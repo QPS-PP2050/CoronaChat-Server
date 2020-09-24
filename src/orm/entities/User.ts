@@ -1,5 +1,4 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-import type { Server } from "./Server";
 
 @Entity()
 export class User {
@@ -7,7 +6,10 @@ export class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column("text")
+    @Column({
+        type: "text",
+        nullable: true
+    })
     username: string | null = null;
 
     @Column("text")
@@ -16,6 +18,9 @@ export class User {
     @Column("text")
     email: string | null = null;
 
-    @Column()
-    servers: Server["id"][] | null = null;
+    @Column({
+        type: "text",
+        nullable: true
+    })
+    servers: string | null = null;
 }

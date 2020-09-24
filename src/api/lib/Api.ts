@@ -1,14 +1,10 @@
-import * as bcrypt from 'bcrypt';
-
-import bodyParser from 'body-parser';
-import helmet from 'helmet';
-import cors from 'cors';
+import * as bodyParser from 'body-parser';
+import * as helmet from 'helmet';
+// import cors from 'cors';
 
 import users from './routes/user';
 import servers from './routes/server';
 import channels from './routes/channel';
-import { connect } from './../../orm/dbConfig';
-import { User } from "./../../orm/entities/User";
 
 import type { Application } from 'express';
 
@@ -40,13 +36,13 @@ export class Api {
 
     public constructor(app: Application) {
         this.app = app;
-        app.use(bodyParser.json());
-        app.use(cors);
-        app.use(helmet);
+        this.app.use(bodyParser.json());
+        // this.app.use(cors());
+        this.app.use(helmet());
 
-        app.use('/api', users);
-        app.use('/api', servers);
-        app.use('/api', channels);
+        this.app.use('/api', users);
+        this.app.use('/api', servers);
+        this.app.use('/api', channels);
         console.log("api online")
     }
 }

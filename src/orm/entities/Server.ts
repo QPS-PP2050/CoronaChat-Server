@@ -1,5 +1,4 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-import type { User } from "./User";
 
 @Entity()
 export class Server {
@@ -13,7 +12,7 @@ export class Server {
     @Column("text")
     ownerID: string | null = null;
 
-    @Column()
-    users: User["id"][] | null = null;
+    @Column("text")
+    users: string | null = null;
 
 }
