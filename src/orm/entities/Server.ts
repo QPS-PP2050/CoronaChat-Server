@@ -1,4 +1,4 @@
-import {Entity, Column, ManyToMany, OneToMany, JoinTable} from "typeorm";
+import {Entity, Column, ManyToMany, OneToMany, JoinTable, OneToOne, JoinColumn} from "typeorm";
 import { Structure } from "./Structure";
 import { Channel } from "./Channel";
 import { User } from "./User";
@@ -9,8 +9,9 @@ export class Server extends Structure {
     @Column("text")
     name: string | null = null;
 
-    @Column("text")
-    ownerID: string | null = null;
+    @OneToOne(type => User, {eager: true})
+    @JoinColumn()
+    owner!: User;
 
     @ManyToMany(type => User)
     @JoinTable({
@@ -26,6 +27,6 @@ export class Server extends Structure {
     })
     users!: User[];
 
-    @OneToMany(type => Channel, channel => channel.serverID)
+    @OneToMany(type => Channel, channel => channel.server, {eager: true})
     channels!: Channel[];
 }

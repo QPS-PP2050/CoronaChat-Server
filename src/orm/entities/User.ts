@@ -13,10 +13,10 @@ export class User {
     })
     username: string | null = null;
 
-    @Column("text")
+    @Column("text", {select: false})
     password: string | null = null;
 
-    @Column("text")
+    @Column("text", {select: false})
     email: string | null = null;
 
     @ManyToMany(type => Server)

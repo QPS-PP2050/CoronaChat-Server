@@ -9,6 +9,6 @@ export class Channel extends Structure {
     name: string | null = null;
 
     @ManyToOne(type => Server, server => server.channels)
-    serverID!: Server;
+    server!: Server;
 
 }
