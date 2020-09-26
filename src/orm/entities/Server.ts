@@ -9,24 +9,14 @@ export class Server extends Structure {
     @Column("text")
     name: string | null = null;
 
-    @OneToOne(type => User, {eager: true})
+    @OneToOne(type => User)
     @JoinColumn()
     owner!: User;
 
     @ManyToMany(type => User)
-    @JoinTable({
-        name: "server_members",
-        joinColumn: {
-            name: "user",
-            referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-            name: "server",
-            referencedColumnName: "id"
-        }
-    })
+    @JoinTable()
     users!: User[];
 
-    @OneToMany(type => Channel, channel => channel.server, {eager: true})
+    @OneToMany(type => Channel, channel => channel.server)
     channels!: Channel[];
 }

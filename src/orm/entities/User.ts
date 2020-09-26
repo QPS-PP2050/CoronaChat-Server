@@ -1,4 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToMany} from "typeorm";
+import { Exclude } from 'class-transformer';
 import { Server } from "./Server";
 
 @Entity()
@@ -13,10 +14,12 @@ export class User {
     })
     username: string | null = null;
 
-    @Column("text", {select: false})
+    @Exclude()
+    @Column("text")
     password: string | null = null;
 
-    @Column("text", {select: false})
+    @Exclude()
+    @Column("text")
     email: string | null = null;
 
     @ManyToMany(type => Server)

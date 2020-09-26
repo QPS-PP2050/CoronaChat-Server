@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import { classToPlain } from 'class-transformer';
 import { Server } from './../../../orm/entities/Server';
 import { Channel } from '../../../orm/entities/Channel';
-import { User } from '../../../orm/entities/User';
+// import { User } from '../../../orm/entities/User';
 
 const router = Router();
 
@@ -10,13 +11,26 @@ const router = Router();
 // Removed temporarily in favour of automatically creating a single server per user
 router.post('/servers', async (req, res) => {
      // Placeholder to Create Server
-    const server = new Server();
+    /* const server = new Server();
     server.name = req.body.name;
     server.owner = await getRepository(User).findOne(req.body.ownerID) as User;
+    server.owner.servers.push(server);
 
-    await getRepository(Server).save(server);
+    await getRepository(User).save(server.owner);
+    await getRepository(Server).save(server); 
     res.send(server);
-    console.log(server)
+    console.log(server) */
+
+    const server = await getRepository(Server)
+        .createQueryBuilder()
+        .insert()
+        .into(Server)
+        .values([
+            {name: req.body.name, owner: req.body.ownerID}
+        ])
+        .execute()
+    console.log(server);
+    res.send(server);
  })
 
  router.get('/servers/:serverId/channels', async (req, res) => {
@@ -40,20 +54,18 @@ router.post('/servers/:serverId/channels', async (req, res) => {
 })
 
 router.get('/servers/:serverId', async (req, res) => {
-    /* const serverID = req.params.serverId;
+   const serverID = req.params.serverId;
 
-    const server = await getRepository(Server).findOne(serverID)
-    res.send(server);
-    console.log(server) */
-    const server = await getRepository(Server)
+    const server = await getRepository(Server).findOne(serverID, {relations: ['channels', 'owner', 'users']})
+    /*const server = await getRepository(Server)
         .createQueryBuilder()
         .select('server')
         .from(Server, 'server')
         .leftJoinAndSelect('server.owner', 'user')
-        .getOne()
+        .getOne()*/
     
-    res.send(server)
-    console.log(server)
+    res.send(classToPlain(server))
+    console.log(classToPlain(server))
 })
 
 router.patch('/servers/:serverId', async (req, res) => {
