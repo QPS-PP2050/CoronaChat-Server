@@ -8,7 +8,7 @@ const prodConfig: ConnectionOptions = {
    username: "coronachat",
    password: "coronachat",
    database: "coronachat-prod",
-   synchronize: true,
+   synchronize: false,
    logging: false,
    entities: [
       join(__dirname, 'entities/*.js')

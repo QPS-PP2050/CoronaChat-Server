@@ -1,15 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, Column, ManyToOne} from "typeorm";
+import { Structure } from "./Structure";
+import { Server } from "./Server";
 
 @Entity()
-export class Channel {
-
-    @PrimaryGeneratedColumn()
-    id!: number;
+export class Channel extends Structure {
 
     @Column("text")
     name: string | null = null;
 
-    @Column("text")
-    serverID: string | null = null;
+    @ManyToOne(type => Server, server => server.channels)
+    serverID!: Server;
 
 }

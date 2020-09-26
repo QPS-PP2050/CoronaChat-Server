@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany} from "typeorm";
+import { Server } from "./Server";
 
 @Entity()
 export class User {
@@ -18,9 +19,6 @@ export class User {
     @Column("text")
     email: string | null = null;
 
-    @Column({
-        type: "text",
-        nullable: true
-    })
-    servers: string | null = null;
+    @ManyToMany(type => Server)
+    servers!: Server[];
 }

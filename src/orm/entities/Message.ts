@@ -1,10 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, Column} from "typeorm";
+import { Structure } from "./Structure";
 
 @Entity()
-export class Message {
-
-    @PrimaryGeneratedColumn()
-    id!: number;
+export class Message extends Structure {
 
     @Column("text")
     content: string | null = null;
