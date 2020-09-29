@@ -26,24 +26,32 @@ export class ChatServer {
     private listen(): void {
         //socket events
         this.io.on(ChatEvent.CONNECT, (socket: any) => {
-            this.io.clients((err: any, clients: []) => {
-                if (err) throw err;
-                console.log(clients)
-                this.io.emit(ChatEvent.MEMBERLIST, clients);
-            })
             console.log('Connected client on port %s.', this.port);
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log('[server](message): %s', JSON.stringify(m));
                 this.io.emit('message', m);
             });
             socket.on(ChatEvent.DISCONNECT, () => {
-                this.io.clients((err: any, clients: []) => {
-                if (err) throw err;
-                console.log(clients)
-                this.io.emit(ChatEvent.MEMBERLIST, clients);
-            })
                 console.log('Client disconnected');
             });
         });
+
+        const servers = this.io.of(/^\/\d+$/);
+        servers.on(ChatEvent.CONNECT, (socket) => {
+            const server = socket.nsp;
+            this.updateMembers(server);
+        })
+
+        servers.use((socket, next) => {
+            next();
+        })
+    }
+
+    private updateMembers(nsp: socketIO.Namespace) {
+        nsp.clients((err: any, clients: []) => {
+            if (err) throw err;
+            console.log(clients)
+            this.io.emit(ChatEvent.MEMBERLIST, clients);
+        })
     }
 }
