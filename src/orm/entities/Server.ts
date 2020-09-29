@@ -1,4 +1,4 @@
-import {Entity, Column, ManyToMany, OneToMany, JoinTable, OneToOne, JoinColumn} from "typeorm";
+import {Entity, Column, ManyToMany, OneToMany, OneToOne, JoinColumn} from "typeorm";
 import { Structure } from "./Structure";
 import { Channel } from "./Channel";
 import { User } from "./User";
@@ -14,7 +14,6 @@ export class Server extends Structure {
     owner!: User;
 
     @ManyToMany(type => User)
-    @JoinTable()
     users!: User[];
 
     @OneToMany(type => Channel, channel => channel.server)
