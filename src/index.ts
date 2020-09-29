@@ -1,10 +1,13 @@
 import "reflect-metadata";
 
+import { connect } from './orm/dbConfig';
 import { HttpsServer } from './https';
 import { ChatServer } from './ws';
 import { Api } from './api';
 
-const https = new HttpsServer();
+connect().then(() => {
+    const https = new HttpsServer();
 
-new ChatServer(https.server);
-new Api(https.app);
+    new ChatServer(https.server);
+    new Api(https.app);
+})

@@ -1,8 +1,6 @@
-image:
-  file: .gitpod.dockerfile
 tasks:
   - before: printf "\n[settings]\napi_key = $WAKATIME_API_KEY\n" > ~/.wakatime.cfg
-  - command: openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert
+  - command: mkdir ssl && openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert
   - init: yarn install
     command: 'echo "TODO: Replace with command to start project"'
   
