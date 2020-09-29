@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
+import * as Snowflake from './../../../utils/Snowflake';
 import { Server } from './../../../orm/entities/Server';
 import { Channel } from '../../../orm/entities/Channel';
-// import { User } from '../../../orm/entities/User';
+import { Member } from '../../../orm/entities/Member';
 
 const router = Router();
 
@@ -11,26 +12,19 @@ const router = Router();
 // Removed temporarily in favour of automatically creating a single server per user
 router.post('/servers', async (req, res) => {
      // Placeholder to Create Server
-    /* const server = new Server();
+    const server = new Server();
+    server.id = Snowflake.generate();
     server.name = req.body.name;
-    server.owner = await getRepository(User).findOne(req.body.ownerID) as User;
-    server.owner.servers.push(server);
+    server.owner = req.body.ownerID;
 
-    await getRepository(User).save(server.owner);
-    await getRepository(Server).save(server); 
-    res.send(server);
-    console.log(server) */
+    const member = new Member();
+    member.user = req.body.ownerID;
+    member.server = server;
 
-    const server = await getRepository(Server)
-        .createQueryBuilder()
-        .insert()
-        .into(Server)
-        .values([
-            {name: req.body.name, owner: req.body.ownerID}
-        ])
-        .execute()
+    await getRepository(Server).save(server);
+    await getRepository(Member).save(member);
+    res.status(200).json(server);
     console.log(server);
-    res.send(server);
  })
 
  router.get('/servers/:serverId/channels', async (req, res) => {
