@@ -1,6 +1,6 @@
-import {PrimaryGeneratedColumn} from "typeorm";
+import {PrimaryColumn} from "typeorm";
 
 export abstract class Structure {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryColumn("text")
+    id!: string;
 }
