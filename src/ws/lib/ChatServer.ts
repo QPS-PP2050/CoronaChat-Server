@@ -39,7 +39,14 @@ export class ChatServer {
         const servers = this.io.of(/^\/\d+$/);
         servers.on(ChatEvent.CONNECT, (socket) => {
             const server = socket.nsp;
+            console.log('Connected client to namespace %s.', server.name);
+            socket.join('general');
             this.updateMembers(server);
+
+            socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
+                console.log(`${server.name}(message): %s`, JSON.stringify(m))
+                socket.to('general').emit('message', m)
+            })
         })
 
         servers.use((socket, next) => {
