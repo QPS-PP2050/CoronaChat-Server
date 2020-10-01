@@ -1,10 +1,10 @@
 // Show users request
-GET https://localhost:8080/users
+GET https://localhost:8080/api/users
 
 ###
 
 // Register request
-POST https://localhost:8080/users
+POST https://localhost:8080/api/users/register
 Content-Type: application/json
 
 {
@@ -16,7 +16,7 @@ Content-Type: application/json
 ###
 
 // Login request
-POST https://localhost:8080/users/login
+POST https://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
