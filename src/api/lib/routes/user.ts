@@ -19,7 +19,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.post('/users/register', async (req, res) => {
+router.post('/users', async (req, res) => {
 
     /* 
     The email regex variable will be compared with the
@@ -123,20 +123,12 @@ async function checkUserEmail(emailInput: String): Promise<any> {
         // Establishes connection
         const connection = await connect();
 
-        // await getConnection()
-        //     .createQueryBuilder()
-        //     .delete()
-        //     .from(User)
-        //     .execute();
-
         const emailQuery = await connection
             .createQueryBuilder()
             .select("user")
             .from(User, "user")
             .where("user.email = :email", { email: emailInput })
             .getRawOne();
-
-        // console.log(emailQuery);
 
         // Returns undefined if no match
         return emailQuery;
