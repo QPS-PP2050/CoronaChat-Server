@@ -188,7 +188,30 @@ router.post('/users/changeusername', async (req, res) => {
     }
 })
 
+router.post('/users/changepassword', async (req, res) => {
+    try {
+        // Updating the local SQL database
+        const connection = await connect();
+        await connection
+            .createQueryBuilder()
+            .update(User)
+            .set({ password: await bcrypt.hash(req.body.password, 10) })
+            .where("id = :id", { id: req.body.id })
+            .execute();
 
+        /*
+        A 201 success status code will be sent along with a message 
+            telling the user that the account was successfully created.
+        */
+        return res.status(201).send("Password changed");
+    } catch (err) {
+        /* 
+        In any odd event something goes wrong whilst the account is being 
+            created, a 500 status code will be sent.
+        */
+        console.log(err);
+    }
+})
 
 
 
