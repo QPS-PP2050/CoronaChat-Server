@@ -26,11 +26,22 @@ Content-Type: application/json
 
 ###
 
-// Change username request 
+// Change username request ('id' will vary)
 POST https://localhost:8080/api/users/changeusername 
 Content-Type: application/json
 
 { 
     "username": "louismanabat1", 
+    "id": 11034681206243328
+}
+
+###
+
+// Change password request ('id' will vary)
+POST https://localhost:8080/api/users/changepassword 
+Content-Type: application/json
+
+{ 
+    "password": "testingPassword", 
     "id": 11034681206243328
 }
