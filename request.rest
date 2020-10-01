@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
     "username": "testing",
-    "email": "louis@hotmail.com",
+    "email": "louis1@hotmail.com",
     "password": "testPassword"
 }
 
@@ -22,4 +22,15 @@ Content-Type: application/json
 {
     "email": "louis@hotmail.com",
     "password": "testPassword"
+}
+
+###
+
+// Change username request 
+POST https://localhost:8080/api/users/changeusername 
+Content-Type: application/json
+
+{ 
+    "username": "louismanabat1", 
+    "id": 11034681206243328
 }
