@@ -10,7 +10,6 @@ router.get('/users', async (req, res) => {
     try {
         const connection = await connect();
         const users = await connection.manager.find(User);
-        console.log(users);
 
         res.json(users);
     } catch (err) {
@@ -19,7 +18,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.post('/users', async (req, res) => {
+router.post('/users/register', async (req, res) => {
 
     /* 
     The email regex variable will be compared with the
@@ -116,8 +115,78 @@ router.post('/users/login', async (req, res) => {
             res.status(500).send();
         }
     }
+});
+
+router.post('/users/changeusername', async (req, res) => {
+    /*
+            The username regex variable will be compared with the username
+            the user provides. The username will be considered valid
+            based on certain conditions:
+            - If there are no illegal characters 
+            - If the beginning character is a letter
+            - Only contains lowercase letters and numbers between 0 to 9
+            - Is between 8 to 16 characters
+            */
+    var usernameRegex = /^\D[a-z0-9]{8,16}$/;
+    // Var below will compare the user input with regex above to see if it is a valid username
+    var compare = req.body.username.match(usernameRegex);
+
+    if (!compare) {
+        /*
+        If username is invalid, a 400 error status code will be sent indicating 
+            that the username format is invalid.
+        */
+        return res.status(400).send('Username is using invalid characters');
+    } else {
+        // The user's input is then searched through the database to see if there is a match
+        const userAccount = await checkUsername(req.body.username);
+
+        if (userAccount !== undefined) {
+            /*
+            If an account under than username already exists, a 400 error status code
+                will be sent along with a message telling the user that an account under
+                that username exists.
+            */
+            return res.status(400).send('That username already exists');
+        } else {
+            /* 
+            If the username is not linked to any account, the current username will be replaced
+                with the user's new chosen username which will be updated in database.
+            */
+            try {
+                // Initialising connection
+                const connection = await connect();
+                // Updating the local SQL database
+                await connection
+                    .createQueryBuilder()
+                    .update(User)
+                    .set({ username: req.body.username })
+                    .where("id = :id", { id: req.body.id })
+                    .execute();
+
+                /*
+                A 201 success status code will be sent along with a message 
+                    telling the user that the account was successfully created.
+                */
+                return res.status(201).send("Username changed");
+            } catch (err) {
+                /* 
+                In any odd event something goes wrong whilst the account is being 
+                    created, a 500 status code will be sent.
+                */
+                console.log(err);
+            }
+        }
+    }
 })
 
+
+
+
+
+
+
+// Check user (explain)
 async function checkUserEmail(emailInput: String): Promise<any> {
     try {
         // Establishes connection
@@ -132,6 +201,38 @@ async function checkUserEmail(emailInput: String): Promise<any> {
 
         // Returns undefined if no match
         return emailQuery;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+/* 
+The checkUsername function searches through the database and checks if an account with 
+    the username exists. It will return a user if it finds a match. Otherwise, it will
+    return undefined.
+*/
+async function checkUsername(usernameInput: String): Promise<any> {
+    try {
+        // Establishes connection
+        const connection = await connect();
+
+        // Temp code
+        // await getConnection()
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(User)
+        //     .execute();
+
+        // SELECT search query to find if a user has the same username
+        const userQuery = await connection
+            .createQueryBuilder()
+            .select("user")
+            .from(User, "user")
+            .where("user.username = :username", { username: usernameInput })
+            .getRawOne();
+
+        // Returns undefined if no match
+        return userQuery;
     } catch (err) {
         console.log(err);
     }
