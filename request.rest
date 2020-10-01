@@ -45,3 +45,14 @@ Content-Type: application/json
     "password": "testingPassword", 
     "id": 11034681206243328
 }
+
+###
+
+// Change email request ('id' will vary) 
+POST https://localhost:8080/api/user/changeemail 
+Content-Type: application/json
+
+{ 
+    "email": "louis1@hotmail.com", 
+    "id": 11034681206243328
+}
