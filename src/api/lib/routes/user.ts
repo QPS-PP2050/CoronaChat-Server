@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 import { Router } from 'express';
 import * as Snowflake from './../../../utils/Snowflake';
 import { User } from './../../../orm/entities/User';
@@ -103,9 +104,11 @@ router.post('/users/login', async (req, res) => {
         */
         try {
             if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
-                res.send('Login failed');
+                res.status(401).send('Login failed');
             } else {
-                res.send('Success');
+                const token = sign({id: userAccount.user_id, username: userAccount.user_username}, 'CoronaChat');
+                console.log(token);
+                res.status(200).send({token});
 
             }
         } catch {
@@ -136,7 +139,7 @@ async function checkUserEmail(emailInput: String): Promise<any> {
             .where("user.email = :email", { email: emailInput })
             .getRawOne();
 
-        // console.log(emailQuery);
+        console.log(emailQuery);
 
         // Returns undefined if no match
         return emailQuery;
