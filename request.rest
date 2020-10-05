@@ -4,7 +4,7 @@ GET https://localhost:8080/api/users
 ###
 
 // Register request
-POST https://localhost:8080/api/users/register
+POST https://localhost:8080/api/users/
 Content-Type: application/json
 
 {
