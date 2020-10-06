@@ -1,6 +1,7 @@
-import {Entity, Column} from "typeorm";
+import {Entity, Column, ManyToMany} from "typeorm";
 import { Exclude } from 'class-transformer';
 import { Structure } from "./Structure";
+import { Server } from './Server';
 
 @Entity()
 export class User extends Structure {
@@ -18,4 +19,7 @@ export class User extends Structure {
     @Exclude()
     @Column("text")
     email: string | null = null;
+
+    @ManyToMany(type => Server, server => server.members, {eager: true})
+    servers?: Server[];
 }

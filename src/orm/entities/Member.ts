@@ -9,6 +9,6 @@ export class Member {
     @JoinColumn()
     user?: User;
 
-    @ManyToOne(type => Server, server => server.members, {primary: true})
+    @ManyToOne(type => Server, server => server.members, {primary: true, eager: true})
     server?: Server;
 }
