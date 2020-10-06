@@ -1,9 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import { sign } from 'jsonwebtoken';
 import { Router } from 'express';
-import * as Snowflake from './../../../utils/Snowflake';
-import { User } from './../../../orm/entities/User';
+
+import { encodeSession } from '../functions';
 import { connect } from './../../../orm/dbConfig';
+import { User } from './../../../orm/entities/User';
+import * as Snowflake from './../../../utils/Snowflake';
+
+
 
 const router = Router();
 
@@ -37,7 +40,7 @@ router.post('/users/register', async (req, res) => {
     if (!compare) {
         /* If email is invalid, a 400 error status code will be sent indicating 
             that the email format is invalid */
-        return res.status(400).send('Email/username is using invalid characters');
+        return res.status(400).send({ reason: 'Email/username is using invalid characters' });
     } else {
         // Will go through the database to see if a user exists
         const userAccount = await checkUserEmail(req.body.email);
@@ -48,7 +51,7 @@ router.post('/users/register', async (req, res) => {
                 will be sent along with a message telling the user that an account under
                 that email exists.
             */
-            return res.status(400).send('Account under that email already exists');
+            return res.status(400).send({ reason: 'Account under that email already exists' });
         } else {
             /*
             If the email is not linked to any account, the password will be hashed
@@ -73,13 +76,13 @@ router.post('/users/register', async (req, res) => {
                 A 201 success status code will be sent along with a message 
                     telling the user that the account was successfully created.
                 */
-                res.status(201).send('Account created');
+                res.status(201).send({ reason: 'Account created' });
             } catch {
                 /* 
                 In any odd event something goes wrong whilst the account is being 
                     created, a 500 status code will be sent.
                 */
-                res.status(500).send('Unknown Error');
+                res.status(500).send({ reason: 'Unknown Error' });
             }
 
         }
@@ -95,7 +98,7 @@ router.post('/users/login', async (req, res) => {
         If the account already exists, a 400 status code error will be sent along with 
             a message telling the user there is no account under that email.
         */
-        return res.status(400).send('Account under this email/username does not exist');
+        return res.status(401).send({ reason: "No account exists for this email address" });
     } else {
         /* 
         If the email exists in the database, the database hashed password
@@ -104,11 +107,14 @@ router.post('/users/login', async (req, res) => {
         */
         try {
             if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
-                res.status(401).send('Login failed');
+                res.status(401).send({ reason: "Invalid password for this account" });
             } else {
-                const token = sign({id: userAccount.user_id, username: userAccount.user_username}, 'CoronaChat');
-                console.log(token);
-                res.status(200).send({token});
+                const session = encodeSession('CoronaChat', {
+                    id: userAccount.user_id,
+                    username: userAccount.user_username
+                });
+                console.log(session);
+                res.status(200).send({ session });
 
             }
         } catch {
