@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
+import * as Snowflake from './../../../utils/Snowflake';
 import { Server } from './../../../orm/entities/Server';
 import { Channel } from '../../../orm/entities/Channel';
-// import { User } from '../../../orm/entities/User';
+import { Member } from '../../../orm/entities/Member';
 
 const router = Router();
 
@@ -11,45 +12,45 @@ const router = Router();
 // Removed temporarily in favour of automatically creating a single server per user
 router.post('/servers', async (req, res) => {
      // Placeholder to Create Server
-    /* const server = new Server();
+    const server = new Server();
+    server.id = Snowflake.generate();
     server.name = req.body.name;
-    server.owner = await getRepository(User).findOne(req.body.ownerID) as User;
-    server.owner.servers.push(server);
+    server.owner = req.body.ownerID;
 
-    await getRepository(User).save(server.owner);
-    await getRepository(Server).save(server); 
-    res.send(server);
-    console.log(server) */
+    const channel = new Channel();
+    channel.id = Snowflake.generate();
+    channel.name = 'general';
+    channel.server = server;
 
-    const server = await getRepository(Server)
-        .createQueryBuilder()
-        .insert()
-        .into(Server)
-        .values([
-            {name: req.body.name, owner: req.body.ownerID}
-        ])
-        .execute()
+    const member = new Member();
+    member.user = req.body.ownerID;
+    member.server = server;
+
+    await getRepository(Server).save(server);
+    await getRepository(Channel).save(channel);
+    await getRepository(Member).save(member);
+    res.status(201).json(server);
     console.log(server);
-    res.send(server);
  })
 
  router.get('/servers/:serverId/channels', async (req, res) => {
-    // Placeholder to create new channel
+    // Placeholder to get channels
     const server = await getRepository(Server)
-    .findOne(req.params.serverId) as Server;
+    .findOne(req.params.serverId, {relations: ['channels']}) as Server;
 
-    res.send(server)
-    console.log(server)
+    res.status(200).send(server.channels)
+    console.log(server.channels)
 })
 
 router.post('/servers/:serverId/channels', async (req, res) => {
     // Placeholder to create new channel
     const channel = new Channel();
+    channel.id = Snowflake.generate();
     channel.name = req.body.name;
     channel.server = await getRepository(Server).findOne(req.params.serverId) as Server;
 
     await getRepository(Channel).save(channel);
-    res.send(channel)
+    res.status(201).send(channel)
     console.log(channel)
 })
 
@@ -57,14 +58,8 @@ router.get('/servers/:serverId', async (req, res) => {
    const serverID = req.params.serverId;
 
     const server = await getRepository(Server).findOne(serverID, {relations: ['channels', 'owner', 'users']})
-    /*const server = await getRepository(Server)
-        .createQueryBuilder()
-        .select('server')
-        .from(Server, 'server')
-        .leftJoinAndSelect('server.owner', 'user')
-        .getOne()*/
     
-    res.send(classToPlain(server))
+    res.status(200).send(classToPlain(server))
     console.log(classToPlain(server))
 })
 

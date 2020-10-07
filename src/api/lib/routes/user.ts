@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Router } from 'express';
+import * as Snowflake from './../../../utils/Snowflake';
 import { User } from './../../../orm/entities/User';
 import { connect } from './../../../orm/dbConfig';
 
@@ -18,7 +19,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.post('/users', async (req, res) => {
+router.post('/users/register', async (req, res) => {
 
     /* 
     The email regex variable will be compared with the
@@ -60,6 +61,7 @@ router.post('/users', async (req, res) => {
                 try {
                     const connection = await connect();
                     const newUser = new User();
+                    newUser.id = Snowflake.generate();
                     newUser.password = hashedPassword;
                     newUser.email = req.body.email;
                     await connection.manager.save(newUser);

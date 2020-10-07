@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { getRepository } from 'typeorm';
+import { Channel } from '../../../orm/entities/Channel';
 
 const router = Router();
 
@@ -12,8 +14,11 @@ router.post('/channels/:channelId/messages', (req, res) => {
 })
 */
 
-router.post('/channels/', (req, res) => {
-    // Placeholder to create new channel
+router.get('/channels/:channelId', async (req, res) => {
+    const channel = await getRepository(Channel)
+    .findOne(req.params.channelId) as Channel;
+
+    res.status(200).send(channel);
 })
 
 router.delete('channels/:channelId', (req, res) => {
