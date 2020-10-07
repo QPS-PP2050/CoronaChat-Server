@@ -15,7 +15,8 @@
       "nodemon": "nodemon dist/index.js",
       "ssl": "openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert",
       "mocha-reg": "mocha mocha/register.test.js",
-      "mocha-login": "mocha mocha/login.test.js"
+      "mocha-login": "mocha mocha/login.test.js",
+      "mocha-changeuser": "mocha mocha/changeuser.test.js"
    },
    "dependencies": {
       "bcrypt": "^5.0.0",
