@@ -9,17 +9,24 @@ import * as Snowflake from './../../../utils/Snowflake';
 
 const router = Router();
 
+// The following get request will return the list of users in a json format
 router.get('/users', async (req, res) => {
     try {
+        // Establishes connection
         const connection = await connect();
+
+        // Finds the lists of users
         const users = await connection.manager.find(User);
 
+        // Prints out the list of users via the extension
         res.json(users);
     } catch (err) {
+        // Error checking if it ever goes wrong for whatever reason
         console.log(err);
     }
 })
 
+// The following post request will register a new user
 router.post('/users', async (req, res) => {
     /* 
     The email regex variable will be compared with the
@@ -31,8 +38,10 @@ router.post('/users', async (req, res) => {
     - No consecutive dots 
     */
     var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
     // Var below will compare the user input with regex above to see if it is a valid email
     var compare = req.body.email.match(emailRegex);
+
     if (!compare) {
         /* If email is invalid, a 400 error status code will be sent indicating 
             that the email format is invalid */
@@ -55,9 +64,10 @@ router.post('/users', async (req, res) => {
                 database.
             */
             try {
+                // Hashes the password using bycrpt
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-                // Pushing to local SQL database
+                // Pushing to the SQL database
                 try {
                     const connection = await connect();
                     const newUser = new User();
@@ -80,7 +90,6 @@ router.post('/users', async (req, res) => {
                 */
                 res.status(500).send({ reason: 'Unknown Error' });
             }
-
         }
     }
 })
