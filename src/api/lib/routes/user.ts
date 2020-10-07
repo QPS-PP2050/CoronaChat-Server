@@ -96,9 +96,9 @@ router.post('/users/login', async (req, res) => {
             response will be sent telling the user that they have successfully logged in. */
         try {
             if (!await bcrypt.compare(req.body.password, userAccount.user_password)) {
-                res.send('Login failed');
+                res.status(400).send('Login failed');
             } else {
-                res.send('Success');
+                res.status(201).send('Success');
             }
         } catch {
             /* In any odd event something goes wrong whilst the user is trying to
