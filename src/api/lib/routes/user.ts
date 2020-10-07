@@ -268,6 +268,13 @@ router.post('/user/changeemail', async (req, res) => {
     }
 })
 
+router.post('/users/deleteuser', async (req, res) => {
+    try {
+
+    } catch (err) {
+        
+    }
+})
 
 
 // Check user (explain)
