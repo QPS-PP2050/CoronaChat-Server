@@ -136,78 +136,90 @@ router.post('/users/changeusername', async (req, res) => {
     var usernameRegex = /^\D[a-z0-9]{8,16}$/;
     // Var below will compare the user input with regex above to see if it is a valid username
     var compare = req.body.username.match(usernameRegex);
+    const userAccount = await accountcheck(req.body.id);
 
-    if (!compare) {
-        /*
-        If username is invalid, a 400 error status code will be sent indicating 
-            that the username format is invalid.
-        */
-        return res.status(400).send('Username is using invalid characters');
+    if (userAccount == undefined) {
+        return res.status(500).send('Account with that User ID does not exist');
     } else {
-        // The user's input is then searched through the database to see if there is a match
-        const userAccount = await checkUsername(req.body.username);
-
-        if (userAccount !== undefined) {
+        if (!compare) {
             /*
-            If an account under than username already exists, a 400 error status code
-                will be sent along with a message telling the user that an account under
-                that username exists.
+            If username is invalid, a 400 error status code will be sent indicating 
+                that the username format is invalid.
             */
-            return res.status(400).send('That username already exists');
+            return res.status(400).send('Username is using invalid characters');
         } else {
-            /* 
-            If the username is not linked to any account, the current username will be replaced
-                with the user's new chosen username which will be updated in database.
-            */
-            try {
-                // Initialising connection
-                const connection = await connect();
-                // Updating the local SQL database
-                await connection
-                    .createQueryBuilder()
-                    .update(User)
-                    .set({ username: req.body.username })
-                    .where("id = :id", { id: req.body.id })
-                    .execute();
+            // The user's input is then searched through the database to see if there is a match
+            const userAccount = await checkUsername(req.body.username);
 
+            if (userAccount !== undefined) {
                 /*
-                A 201 success status code will be sent along with a message 
-                    telling the user that the account was successfully created.
+                If an account under than username already exists, a 400 error status code
+                    will be sent along with a message telling the user that an account under
+                    that username exists.
                 */
-                return res.status(201).send("Username changed");
-            } catch (err) {
+                return res.status(400).send('That username already exists');
+            } else {
                 /* 
-                In any odd event something goes wrong whilst the account is being 
-                    created, a 500 status code will be sent.
+                If the username is not linked to any account, the current username will be replaced
+                    with the user's new chosen username which will be updated in database.
                 */
-                console.log(err);
+                try {
+                    // Initialising connection
+                    const connection = await connect();
+                    // Updating the local SQL database
+                    await connection
+                        .createQueryBuilder()
+                        .update(User)
+                        .set({ username: req.body.username })
+                        .where("id = :id", { id: req.body.id })
+                        .execute();
+
+                    /*
+                    A 201 success status code will be sent along with a message 
+                        telling the user that the account was successfully created.
+                    */
+                    return res.status(201).send("Username changed");
+                } catch (err) {
+                    /* 
+                    In any odd event something goes wrong whilst the account is being 
+                        created, a 500 status code will be sent.
+                    */
+                    console.log(err);
+                }
             }
         }
     }
 })
 
 router.post('/users/changepassword', async (req, res) => {
-    try {
-        // Updating the local SQL database
-        const connection = await connect();
-        await connection
-            .createQueryBuilder()
-            .update(User)
-            .set({ password: await bcrypt.hash(req.body.password, 10) })
-            .where("id = :id", { id: req.body.id })
-            .execute();
+    const userAccount = await accountcheck(req.body.id);
 
-        /*
-        A 201 success status code will be sent along with a message 
-            telling the user that the account was successfully created.
-        */
-        return res.status(201).send("Password changed");
-    } catch (err) {
-        /* 
-        In any odd event something goes wrong whilst the account is being 
-            created, a 500 status code will be sent.
-        */
-        console.log(err);
+
+    if (userAccount == undefined) {
+        return res.status(500).send('Account with that User ID does not exist');
+    } else {
+        try {
+            // Updating the local SQL database
+            const connection = await connect();
+            await connection
+                .createQueryBuilder()
+                .update(User)
+                .set({ password: await bcrypt.hash(req.body.password, 10) })
+                .where("id = :id", { id: req.body.id })
+                .execute();
+
+            /*
+            A 201 success status code will be sent along with a message 
+                telling the user that the account was successfully created.
+            */
+            return res.status(201).send("Password changed");
+        } catch (err) {
+            /* 
+            In any odd event something goes wrong whilst the account is being 
+                created, a 500 status code will be sent.
+            */
+            console.log(err);
+        }
     }
 })
 
@@ -224,51 +236,56 @@ router.post('/user/changeemail', async (req, res) => {
     var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     // Var below will compare the user input with regex above to see if it is a valid email
     var compare = req.body.email.match(emailRegex);
+    const userAccount = await accountcheck(req.body.id);
 
-    if (!compare) {
-        /*
-        If email is invalid, a 400 error status code will be sent indicating 
-            that the email format is invalid.
-        */
-        return res.status(400).send('Email is using invalid characters');
+    if (userAccount == undefined) {
+        return res.status(500).send('Account with that User ID does not exist');
     } else {
-        // The user's input is then searched through the database to see if there is a match
-        const userAccount = await checkUserEmail(req.body.email);
-
-        if (userAccount !== undefined) {
+        if (!compare) {
             /*
-            If an account under than email already exists, a 400 error status code
-                will be sent along with a message telling the user that an account under
-                that email exists.
+            If email is invalid, a 400 error status code will be sent indicating 
+                that the email format is invalid.
             */
-            return res.status(400).send('That email already exists');
+            return res.status(400).send('Email is using invalid characters');
         } else {
-            /* 
-            If the email is not linked to any account, the current email will be replaced
-                with the user's new chosen email which will be updated in database.
-            */
-            try {
+            // The user's input is then searched through the database to see if there is a match
+            const userAccount = await checkUserEmail(req.body.email);
 
-                const connection = await connect();
-                // Updating the local SQL database
-                await connection
-                    .createQueryBuilder()
-                    .update(User)
-                    .set({ email: req.body.email })
-                    .where("id = :id", { id: req.body.id })
-                    .execute();
-
+            if (userAccount !== undefined) {
                 /*
-                A 201 success status code will be sent along with a message 
-                    telling the user that the account was successfully created.
+                If an account under than email already exists, a 400 error status code
+                    will be sent along with a message telling the user that an account under
+                    that email exists.
                 */
-                return res.status(201).send("Email changed");
-            } catch (err) {
+                return res.status(400).send('That email already exists');
+            } else {
                 /* 
-                In any odd event something goes wrong whilst the account is being 
-                    created, a 500 status code will be sent.
+                If the email is not linked to any account, the current email will be replaced
+                    with the user's new chosen email which will be updated in database.
                 */
-                console.log(err);
+                try {
+
+                    const connection = await connect();
+                    // Updating the local SQL database
+                    await connection
+                        .createQueryBuilder()
+                        .update(User)
+                        .set({ email: req.body.email })
+                        .where("id = :id", { id: req.body.id })
+                        .execute();
+
+                    /*
+                    A 201 success status code will be sent along with a message 
+                        telling the user that the account was successfully created.
+                    */
+                    return res.status(201).send("Email changed");
+                } catch (err) {
+                    /* 
+                    In any odd event something goes wrong whilst the account is being 
+                        created, a 500 status code will be sent.
+                    */
+                    console.log(err);
+                }
             }
         }
     }
@@ -276,16 +293,22 @@ router.post('/user/changeemail', async (req, res) => {
 
 
 router.delete('/users/:userID', async (req, res) => {
-    try {
-        const connection = await connect();
-        await connection
-            .createQueryBuilder()
-            .delete()
-            .from(User)
-            .where("user.id = :id", { id: req.params.userID })
-            .execute();
-    } catch (err) {
-        console.log(err);
+    const userAccount = await accountcheck(req.body.id);
+
+    if (userAccount == undefined) {
+        return res.status(500).send('Account with that User ID does not exist');
+    } else {
+        try {
+            const connection = await connect();
+            await connection
+                .createQueryBuilder()
+                .delete()
+                .from(User)
+                .where("user.id = :id", { id: req.params.userID })
+                .execute();
+        } catch (err) {
+            console.log(err);
+        }
     }
 })
 
@@ -300,11 +323,11 @@ async function accountcheck(userID: number): Promise<any> {
             .createQueryBuilder()
             .select("user")
             .from(User, "user")
-            .where("user.id = : id", { id: userID })
+            .where("user.id = :id", { id: userID })
             .getRawOne();
 
-            // Returns undefined if no match
-            return accountQuery;
+        // Returns undefined if no match
+        return accountQuery;
     } catch (err) {
         console.log(err);
     }
