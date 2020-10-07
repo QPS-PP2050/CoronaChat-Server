@@ -14,7 +14,6 @@ router.get('/users', async (req, res) => {
         res.json(users);
     } catch (err) {
         console.log(err);
-
     }
 })
 
@@ -275,13 +274,33 @@ router.delete('/users/:userID', async (req, res) => {
             .createQueryBuilder()
             .delete()
             .from(User)
-            .where("id = :id", { id: req.params.userID })
+            .where("user.id = :id", { id: req.params.userID })
             .execute();
     } catch (err) {
         console.log(err);
     }
 })
 
+
+async function accountcheck(userID: number): Promise<any> {
+    try {
+        // Establishes connection
+        const connection = await connect();
+
+        // SELECT search query to find if an account under the user ID exists
+        const accountQuery = await connection
+            .createQueryBuilder()
+            .select("user")
+            .from(User, "user")
+            .where("user.id = : id", { id: userID })
+            .getRawOne();
+
+            // Returns undefined if no match
+            return accountQuery;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 // Check user (explain)
 async function checkUserEmail(emailInput: String): Promise<any> {
