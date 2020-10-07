@@ -41,7 +41,14 @@ export class ChatServer {
             const server = socket.nsp;
             console.log('Connected client to namespace %s.', server.name);
             socket.join('general');
+            console.log(socket.rooms)
             this.updateMembers(server);
+
+            socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
+                console.log(channelID)
+                socket.leaveAll();
+                socket.join(channelID);
+            })
 
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log(`${server.name}(message): %s`, JSON.stringify(m))

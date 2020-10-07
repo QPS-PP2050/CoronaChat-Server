@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcrypt';
 import { Router } from 'express';
-
 import { encodeSession } from '../functions';
 import { connect } from './../../../orm/dbConfig';
 import { User } from './../../../orm/entities/User';
