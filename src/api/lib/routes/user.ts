@@ -268,14 +268,14 @@ router.post('/user/changeemail', async (req, res) => {
 })
 
 
-router.post('/users/deleteuser', async (req, res) => {
+router.delete('/users/:userID', async (req, res) => {
     try {
         const connection = await connect();
         await connection
             .createQueryBuilder()
             .delete()
             .from(User)
-            .where("email= :email", { email: req.body.email })
+            .where("id = :id", { id: req.params.userID })
             .execute();
     } catch (err) {
         console.log(err);
