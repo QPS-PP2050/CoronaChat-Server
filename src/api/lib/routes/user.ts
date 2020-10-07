@@ -95,11 +95,10 @@ router.post('/users/login', async (req, res) => {
     // The user's input is then searched through the database to see if there is a match
     const userAccount = await checkUserEmail(req.body.email);
 
+    /* If the account already exists, a 400 status code error will be sent along with 
+        a message telling the user there is no account under that email. */
     if (userAccount == undefined) {
-        /*
-        If the account already exists, a 400 status code error will be sent along with 
-            a message telling the user there is no account under that email.
-        */
+
         return res.status(400).send('Account under this email/username does not exist');
     } else {
         /* 
@@ -126,19 +125,23 @@ router.post('/users/login', async (req, res) => {
 
 router.post('/users/changeusername', async (req, res) => {
     /*
-            The username regex variable will be compared with the username
-            the user provides. The username will be considered valid
-            based on certain conditions:
-            - If there are no illegal characters 
-            - If the beginning character is a letter
-            - Only contains lowercase letters and numbers between 0 to 9
-            - Is between 8 to 16 characters
-            */
+        The username regex variable will be compared with the username
+        the user provides. The username will be considered valid
+        based on certain conditions:
+        - If there are no illegal characters 
+        - If the beginning character is a letter
+        - Only contains lowercase letters and numbers between 0 to 9
+        - Is between 8 to 16 characters
+        */
     var usernameRegex = /^\D[a-z0-9]{8,16}$/;
     // Var below will compare the user input with regex above to see if it is a valid username
     var compare = req.body.username.match(usernameRegex);
+
+    // Checks if a user with a certain ID exists
     const userAccount = await accountcheck(req.body.id);
 
+    /* If the account does not exists, a 400 status code error will be sent along with 
+        a message telling the user there is no account under that ID. */
     if (userAccount == undefined) {
         return res.status(500).send('Account with that User ID does not exist');
     } else {
@@ -152,21 +155,18 @@ router.post('/users/changeusername', async (req, res) => {
             // The user's input is then searched through the database to see if there is a match
             const userAccount = await checkUsername(req.body.username);
 
+            /* If an account under than username already exists, a 400 error status code
+                will be sent along with a message telling the user that an account under
+                that username exists. */
             if (userAccount !== undefined) {
-                /*
-                If an account under than username already exists, a 400 error status code
-                    will be sent along with a message telling the user that an account under
-                    that username exists.
-                */
                 return res.status(400).send('That username already exists');
             } else {
-                /* 
-                If the username is not linked to any account, the current username will be replaced
-                    with the user's new chosen username which will be updated in database.
-                */
+                /* If the username is not linked to any account, the current username will be replaced
+                    with the user's new chosen username which will be updated in database. */
                 try {
                     // Initialising connection
                     const connection = await connect();
+
                     // Updating the local SQL database
                     await connection
                         .createQueryBuilder()
@@ -175,16 +175,12 @@ router.post('/users/changeusername', async (req, res) => {
                         .where("id = :id", { id: req.body.id })
                         .execute();
 
-                    /*
-                    A 201 success status code will be sent along with a message 
-                        telling the user that the account was successfully created.
-                    */
+                    /* A 201 success status code will be sent along with a message 
+                        telling the user that the account was successfully created. */
                     return res.status(201).send("Username changed");
                 } catch (err) {
-                    /* 
-                    In any odd event something goes wrong whilst the account is being 
-                        created, a 500 status code will be sent.
-                    */
+                    /* In any odd event something goes wrong whilst the account is being 
+                        created, a 500 status code will be sent. */
                     console.log(err);
                 }
             }
