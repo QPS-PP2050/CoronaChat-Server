@@ -9,8 +9,18 @@ Content-Type: application/json
 
 {
     "username": "testing",
-    "email": "louis1@hotmail.com",
+    "email": "louis3@gmail.com",
     "password": "testPassword"
+}
+
+###
+
+// Delete request
+POST POST https://localhost:8080/api/users/deleteuser
+Content-Type: application/json
+
+{
+    "email": "louis3@gmail.com"
 }
 
 ###
@@ -20,7 +30,7 @@ POST https://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
-    "email": "louis@hotmail.com",
+    "email": "louis3@gmail.com",
     "password": "testPassword"
 }
 
