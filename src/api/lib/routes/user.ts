@@ -19,7 +19,6 @@ router.get('/users', async (req, res) => {
 })
 
 router.post('/users', async (req, res) => {
-
     /* 
     The email regex variable will be compared with the
         email the user provides. The email will be considered valid
@@ -268,11 +267,18 @@ router.post('/user/changeemail', async (req, res) => {
     }
 })
 
+
 router.post('/users/deleteuser', async (req, res) => {
     try {
-
+        const connection = await connect();
+        await connection
+            .createQueryBuilder()
+            .delete()
+            .from(User)
+            .where("email= :email", { email: req.body.email })
+            .execute();
     } catch (err) {
-        
+        console.log(err);
     }
 })
 
