@@ -16,7 +16,7 @@ Content-Type: application/json
 ###
 
 // Delete request
-POST POST https://localhost:8080/api/users/deleteuser
+DELETE https://localhost:8080/api/users/
 Content-Type: application/json
 
 {
