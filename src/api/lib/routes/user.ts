@@ -313,7 +313,7 @@ router.delete('/users/:userID', async (req, res) => {
     }
 })
 
-
+// The function checks if there is a user with a certain ID that exists in the database
 async function accountcheck(userID: number): Promise<any> {
     try {
         // Establishes connection
@@ -330,11 +330,12 @@ async function accountcheck(userID: number): Promise<any> {
         // Returns undefined if no match
         return accountQuery;
     } catch (err) {
+        // Throws an error if something goes wrong during the process
         console.log(err);
     }
 }
 
-// Check user (explain)
+// This is for the changeemail POST request to see if that email already exists on the system
 async function checkUserEmail(emailInput: String): Promise<any> {
     try {
         // Establishes connection
@@ -353,15 +354,14 @@ async function checkUserEmail(emailInput: String): Promise<any> {
         // Returns undefined if no match
         return emailQuery;
     } catch (err) {
+        // Throws an error if something goes wrong during the process
         console.log(err);
     }
 }
 
-/* 
-The checkUsername function searches through the database and checks if an account with 
+/* The checkUsername function searches through the database and checks if an account with 
     the username exists. It will return a user if it finds a match. Otherwise, it will
-    return undefined.
-*/
+    return undefined. */
 async function checkUsername(usernameInput: String): Promise<any> {
     try {
         // Establishes connection
@@ -378,6 +378,7 @@ async function checkUsername(usernameInput: String): Promise<any> {
         // Returns undefined if no match
         return userQuery;
     } catch (err) {
+        // Throws an error if something goes wrong during the process
         console.log(err);
     }
 }
