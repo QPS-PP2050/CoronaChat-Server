@@ -16,12 +16,8 @@ Content-Type: application/json
 ###
 
 // Delete request
-DELETE https://localhost:8080/api/users/
+DELETE https://localhost:8080/api/users/:userID
 Content-Type: application/json
-
-{
-    "email": "louis3@gmail.com"
-}
 
 ###
 
