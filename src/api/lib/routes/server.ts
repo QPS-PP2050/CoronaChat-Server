@@ -34,7 +34,7 @@ router.post('/servers', authorization, async (req, res) => {
     await getRepository(Server).save(server);
     await getRepository(Channel).save(channel);
     // await getRepository(Member).save(member);
-    res.status(201).json(server);
+    res.status(201).json(classToPlain(server));
     console.log(server);
  })
 
