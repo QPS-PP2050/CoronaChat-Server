@@ -20,6 +20,6 @@ export class User extends Structure {
     @Column("text")
     email: string | null = null;
 
-    @ManyToMany(type => Server, server => server.members, {eager: true})
+    @ManyToMany(type => Server, server => server.members)
     servers?: Server[];
 }
