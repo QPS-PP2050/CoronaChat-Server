@@ -16,12 +16,19 @@ export function authorization(request: Request, response: Response, next: NextFu
     const secretKey = 'CoronaChat'
     const requestHeader = "Authorization";
     const responseHeader = "X-Refresh-Token"
-    const header = request.header(requestHeader);
+    let header = request.header(requestHeader);
     
     if (!header) {
         unauthorized(`Required ${requestHeader} header not found.`);
         return;
     }
+
+    if (!header.startsWith('Bearer')) {
+        unauthorized('Invalid authorization type provided.')
+        return;
+    }
+
+    header = header.split(' ')[1];
 
     const decodedSession: DecodeResult = decodeSession(secretKey, header);
     
