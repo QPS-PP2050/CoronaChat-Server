@@ -5,6 +5,7 @@ import { authorization } from '../middleware/authorization';
 import { connect } from '@orm/dbConfig';
 import { User } from '@orm/entities/User';
 import * as Snowflake from '@utils/Snowflake';
+import { getRepository } from 'typeorm';
 
 const router = Router();
 
@@ -87,7 +88,11 @@ router.post('/users', async (req, res) => {
     }
 })
 
-router.delete('/users/:userId', authorization, async (req, res) => {})
+router.delete('/users/:userId', authorization, async (req, res) => {
+    await getRepository(User).delete(req.params.userId);
+
+    res.status(200).send({ok: true, status: 200, message: 'User Deleted'})
+})
 
 router.post('/users/login', async (req, res) => {
     // The user's input is then searched through the database to see if there is a match
