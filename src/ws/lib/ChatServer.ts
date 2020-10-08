@@ -6,6 +6,12 @@ import type { ChatMessage } from './types/ChatMessage';
 import type { Server } from 'https';
 import type { Server as aServer } from 'http';
 
+declare module 'socket.io' {
+    interface Socket {
+        room: string;
+    }
+}
+
 export class ChatServer {
 
     private server: Server | aServer;
@@ -40,19 +46,23 @@ export class ChatServer {
         servers.on(ChatEvent.CONNECT, (socket) => {
             const server = socket.nsp;
             console.log('Connected client to namespace %s.', server.name);
-            socket.join('general');
+            socket.join('general', () => {
+                socket.room = 'general'
+            });
             console.log(socket.rooms)
             this.updateMembers(server);
 
             socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
-                console.log(channelID)
-                socket.leaveAll();
-                socket.join(channelID);
+                if (socket.room !== channelID) {
+                    socket.leave(socket.room);
+                    socket.room = channelID;
+                    socket.join(channelID);
+                }
             })
 
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log(`${server.name}(message): %s`, JSON.stringify(m))
-                server.to('general').emit('message', m);
+                server.to(m.channel).emit('message', m);
             })
 
             socket.on(ChatEvent.DISCONNECT, () => {
