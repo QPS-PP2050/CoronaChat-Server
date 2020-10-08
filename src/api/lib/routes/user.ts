@@ -1,11 +1,10 @@
 import * as bcrypt from 'bcrypt';
 import { Router } from 'express';
 import { encodeSession } from '../functions';
-import { connect } from './../../../orm/dbConfig';
-import { User } from './../../../orm/entities/User';
-import * as Snowflake from './../../../utils/Snowflake';
-
-
+import { authorization } from '../middleware/authorization';
+import { connect } from '@orm/dbConfig';
+import { User } from '@orm/entities/User';
+import * as Snowflake from '@utils/Snowflake';
 
 const router = Router();
 
@@ -22,7 +21,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.post('/users/register', async (req, res) => {
+router.post('/users', async (req, res) => {
 
     /* 
     The email regex variable will be compared with the
@@ -87,6 +86,8 @@ router.post('/users/register', async (req, res) => {
         }
     }
 })
+
+router.delete('/users/:userId', authorization, async (req, res) => {})
 
 router.post('/users/login', async (req, res) => {
     // The user's input is then searched through the database to see if there is a match

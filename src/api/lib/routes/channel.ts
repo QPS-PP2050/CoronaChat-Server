@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { authorization } from '../middleware/authorization';
-import { Channel } from '../../../orm/entities/Channel';
+import { Channel } from '@orm/entities/Channel';
 
 
 const router = Router();

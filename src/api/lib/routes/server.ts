@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
-import * as Snowflake from './../../../utils/Snowflake';
-import { Server } from './../../../orm/entities/Server';
-import { Channel } from '../../../orm/entities/Channel';
-// import { Member } from '../../../orm/entities/Member';
 import { authorization } from '../middleware/authorization';
-import { User } from '../../../orm/entities/User';
+import * as Snowflake from '@utils/Snowflake';
+import { Server } from '@orm/entities/Server';
+import { Channel } from '@orm/entities/Channel';
+import { User } from '@orm/entities/User';
 
 const router = Router();
 

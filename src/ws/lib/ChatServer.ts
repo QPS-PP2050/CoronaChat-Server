@@ -1,4 +1,4 @@
-import { HttpsServer } from '../../https/lib/HttpsServer';
+import { HttpsServer } from '@https/lib/HttpsServer';
 import { ChatEvent } from './Constants';
 import * as socketIO from 'socket.io';
 
