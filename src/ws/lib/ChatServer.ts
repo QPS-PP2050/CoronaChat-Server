@@ -27,10 +27,10 @@ export class ChatServer {
         //socket events
         this.io.on(ChatEvent.CONNECT, (socket: any) => {
             console.log('Connected client on port %s.', this.port);
-            socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
+            /* socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log('[server](message): %s', JSON.stringify(m));
                 this.io.emit('message', m);
-            });
+            }); */
             socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
             });
@@ -45,7 +45,11 @@ export class ChatServer {
 
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log(`${server.name}(message): %s`, JSON.stringify(m))
-                socket.to('general').emit('message', m)
+                server.to('general').emit('message', m);
+            })
+
+            socket.on(ChatEvent.DISCONNECT, () => {
+                this.updateMembers(server);
             })
         })
 
@@ -54,11 +58,11 @@ export class ChatServer {
         })
     }
 
-    private updateMembers(nsp: socketIO.Namespace) {
+    private async updateMembers(nsp: socketIO.Namespace) {
         nsp.clients((err: any, clients: []) => {
             if (err) throw err;
             console.log(clients)
-            this.io.emit(ChatEvent.MEMBERLIST, clients);
+            nsp.emit(ChatEvent.MEMBERLIST, clients);
         })
     }
 }
