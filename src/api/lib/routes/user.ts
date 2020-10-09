@@ -88,8 +88,20 @@ router.post('/users', async (req, res) => {
     }
 })
 
-router.delete('/users/:userId', authorization, async (req, res) => {
-    await getRepository(User).delete(req.params.userId);
+router.patch('/user/:userID', authorization, async(req, res) => {
+    if (req.body.username.length !== 0) {
+
+    } else if (req.body.email.length !== 0) {
+
+    } else if (req.body.password.length !== 0) {
+
+    } else {
+        res.status(500).send({ reason: 'Invalid body' });
+    }
+})
+
+router.delete('/users/:userID', authorization, async (req, res) => {
+    await getRepository(User).delete(req.params.userID);
 
     res.status(200).send({ok: true, status: 200, message: 'User Deleted'})
 })
