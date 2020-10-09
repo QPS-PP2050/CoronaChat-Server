@@ -88,9 +88,58 @@ router.post('/users', async (req, res) => {
     }
 })
 
-router.patch('/user/:userID', authorization, async(req, res) => {
+router.patch('/user/:userID', authorization, async (req, res) => {
     if (req.body.username.length !== 0) {
+        /*  The username regex variable will be compared with the username
+        the user provides. The username will be considered valid
+        based on certain conditions:
+        - If there are no illegal characters 
+        - If the beginning character is a letter
+        - Only contains lowercase letters and numbers between 0 to 9
+        - Is between 8 to 16 characters */
+        var usernameRegex = /^\D[a-z0-9]{8,16}$/;
 
+        // Var below will compare the user input with regex above to see if it is a valid username
+        var compare = req.body.username.match(usernameRegex);
+
+        if (!compare) {
+            /* If username is invalid, a 400 error status code will be sent indicating 
+                that the username format is invalid. */
+            return res.status(400).send({ reason: 'Username is using invalid characters' });
+        } else {
+            // The user's input is then searched through the database to see if there is a match
+            const userAccount = await checkUsername(req.body.username);
+
+            /* If an account under than username already exists, a 400 error status code
+                will be sent along with a message telling the user that an account under
+                that username exists. */
+            if (userAccount !== undefined) {
+                return res.status(400).send({ reason: 'That username already exists' });
+            } else {
+                /* If the username is not linked to any account, the current username will be replaced
+                    with the user's new chosen username which will be updated in database. */
+                try {
+                    // Establishes connection
+                    const connection = await connect();
+
+                    // Updating the SQL database
+                    await connection
+                        .createQueryBuilder()
+                        .update(User)
+                        .set({ username: req.body.username })
+                        .where("id = :id", { id: req.params.userID })
+                        .execute();
+
+                    /* A 201 success status code will be sent along with a message 
+                        telling the user that the account was successfully created. */
+                    return res.status(201).send({ reason: "Username changed" });
+                } catch (err) {
+                    /* In any odd event something goes wrong whilst the account is being 
+                        created, a 500 status code will be sent. */
+                    res.status(500).send({ reason: 'Unknown Error' });
+                }
+            }
+        }
     } else if (req.body.email.length !== 0) {
 
     } else if (req.body.password.length !== 0) {
@@ -103,7 +152,7 @@ router.patch('/user/:userID', authorization, async(req, res) => {
 router.delete('/users/:userID', authorization, async (req, res) => {
     await getRepository(User).delete(req.params.userID);
 
-    res.status(200).send({ok: true, status: 200, message: 'User Deleted'})
+    res.status(200).send({ ok: true, status: 200, message: 'User Deleted' })
 })
 
 // This following post request will login an existing user from the database
@@ -331,7 +380,7 @@ router.delete('/users/:userID', async (req, res) => {
 })
 
 // The function checks if there is a user with a certain ID that exists in the database
-async function accountcheck(userID: number): Promise<any> {
+async function accountcheck(userID: String): Promise<any> {
     try {
         // Establishes connection
         const connection = await connect();
