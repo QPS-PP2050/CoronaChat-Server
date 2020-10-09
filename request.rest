@@ -32,32 +32,29 @@ Content-Type: application/json
 ###
 
 // Change username request ('id' will vary)
-POST https://localhost:8080/api/users/changeusername 
+PATCH https://localhost:8080/api/users/13193204077821952
 Content-Type: application/json
 
 { 
-    "username": "louismanabat", 
-    "id": 13173988394139648
+    "username": "testname12"
 }
 
 ###
 
 // Change password request ('id' will vary)
-POST https://localhost:8080/api/users/changepassword 
+PATCH https://localhost:8080/api/users/13193204077821952
 Content-Type: application/json
 
 { 
-    "password": "testingPassword", 
-    "id": 13173988394139648
+    "password": "testingPassword"
 }
 
 ###
 
 // Change email request ('id' will vary) 
-POST https://localhost:8080/api/user/changeemail 
+PATCH https://localhost:8080/api/users/13193204077821952
 Content-Type: application/json
 
 { 
-    "email": "louis@gmail.com", 
-    "id": 13173988394139648
+    "email": "testname12.1@gmail.com"
 }
