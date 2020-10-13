@@ -1,14 +1,14 @@
 import { HttpsServer } from '@https/lib/HttpsServer';
 import { Server } from '@orm/entities/Server';
-import { ChatEvent } from './Constants';
+import { Channel } from '@orm/entities/Channel';
+import { ChatEvent } from '@utils/Constants';
+import { wsAuthorization } from './middleware/wsAuthorization';
 import { getRepository } from 'typeorm';
 import * as socketIO from 'socket.io';
 
-import type { ChatMessage } from './types/ChatMessage';
 import type { Server as httpsServer } from 'https';
 import type { Server as httpServer } from 'http';
-import type { Session } from '@api/lib/types';
-import { wsAuthorization } from './middleware/wsAuthorization';
+import type { ChatMessage, Session } from '@utils/Types';
 
 declare module 'socket.io' {
     interface Socket {
@@ -45,17 +45,30 @@ export class ChatServer {
                     owner: socket.session.id
                 }
             })
+
             this.io.emit('servers', servers);
-            
+
             socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
             });
         });
 
         const servers = this.io.of(/^\/\d+$/);
-        servers.on(ChatEvent.CONNECT, (socket) => {
+        servers.on(ChatEvent.CONNECT, async (socket) => {
             const server = socket.nsp;
             console.log('Connected client to namespace %s.', server.name);
+
+            const channels = await getRepository(Channel).find({
+                select: ['id', 'name', 'type'],
+                where: {
+                    server: server.name.split('/')[1]
+                }
+            })
+
+            channels.sort((a,b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0)); 
+
+            socket.emit(ChatEvent.CHANNEL, channels);
+
             socket.join('general', () => {
                 socket.room = 'general'
             });
@@ -63,6 +76,7 @@ export class ChatServer {
             this.updateMembers(server);
 
             socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
+                console.log(channelID)
                 if (socket.room !== channelID) {
                     socket.leave(socket.room);
                     socket.room = channelID;

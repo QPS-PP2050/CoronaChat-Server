@@ -2,7 +2,6 @@ import {Entity, Column, ManyToMany, OneToMany, OneToOne, JoinColumn, JoinTable} 
 import { Structure } from "./Structure";
 import { Channel } from "./Channel";
 import { User } from "./User";
-// import { Member } from "./Member";
 
 @Entity()
 export class Server extends Structure {

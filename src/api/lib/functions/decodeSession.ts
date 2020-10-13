@@ -1,5 +1,5 @@
 import { decode, TAlgorithm } from "jwt-simple";
-import type { DecodeResult, Session } from '../types';
+import type { DecodeResult, Session } from '@utils/Types';
 
 export function decodeSession(secretKey: string, tokenString: string): DecodeResult {
     // Always use HS512 to decode the token

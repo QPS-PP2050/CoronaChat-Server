@@ -2,7 +2,7 @@ import { decodeSession } from "@api/lib/functions";
 
 import type { Socket } from "socket.io";
 import type { NextFunction } from "express";
-import type { DecodeResult, Session } from "@api/lib/types";
+import type { DecodeResult, Session } from "@utils/Types";
 
 export function wsAuthorization(socket: Socket, next: NextFunction) {
     const secretKey = 'CoronaChat'
