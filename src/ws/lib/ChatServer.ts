@@ -1,24 +1,29 @@
 import { HttpsServer } from '@https/lib/HttpsServer';
+import { Server } from '@orm/entities/Server';
 import { ChatEvent } from './Constants';
+import { getRepository } from 'typeorm';
 import * as socketIO from 'socket.io';
 
 import type { ChatMessage } from './types/ChatMessage';
-import type { Server } from 'https';
-import type { Server as aServer } from 'http';
+import type { Server as httpsServer } from 'https';
+import type { Server as httpServer } from 'http';
+import type { Session } from '@api/lib/types';
+import { wsAuthorization } from './middleware/wsAuthorization';
 
 declare module 'socket.io' {
     interface Socket {
         room: string;
+        session: Session;
     }
 }
 
 export class ChatServer {
 
-    private server: Server | aServer;
+    private server: httpsServer | httpServer;
     private port: string | number;
     private io!: SocketIO.Server;
 
-    public constructor(server: Server | aServer) {
+    public constructor(server: httpsServer | httpServer) {
         this.server = server;
         this.port = HttpsServer.PORT;
         this.initSocket();
@@ -31,12 +36,17 @@ export class ChatServer {
 
     private listen(): void {
         //socket events
-        this.io.on(ChatEvent.CONNECT, (socket: any) => {
-            console.log('Connected client on port %s.', this.port);
-            /* socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
-                console.log('[server](message): %s', JSON.stringify(m));
-                this.io.emit('message', m);
-            }); */
+        this.io.use(wsAuthorization);
+        this.io.on(ChatEvent.CONNECT, async (socket: any) => {
+            console.log('Connected client on port %s.', this.port); 
+            const servers = await getRepository(Server).find({
+                select: ['id', 'name'],
+                where: {
+                    owner: socket.session.id
+                }
+            })
+            this.io.emit('servers', servers);
+            
             socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
             });
