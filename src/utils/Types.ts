@@ -24,6 +24,8 @@ export type PartialSession = Omit<Session, "issued" | "expires">;
 
 export interface EncodeResult {
     token: string,
+    id: number,
+    username: string,
     expires: number,
     issued: number
 }

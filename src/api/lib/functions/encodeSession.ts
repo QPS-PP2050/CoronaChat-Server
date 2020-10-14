@@ -16,6 +16,8 @@ export function encodeSession(secretKey: string, partialSession: PartialSession)
 
     return {
         token: encode(session, secretKey, algorithm),
+        id: partialSession.id,
+        username: partialSession.username,
         issued: issued,
         expires: expires
     };
