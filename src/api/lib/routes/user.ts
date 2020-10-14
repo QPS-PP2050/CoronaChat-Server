@@ -72,10 +72,10 @@ router.post('/users', async (req, res) => {
                     newUser.username = req.body.username;
                     await connection.manager.save(newUser);
 
-                /* 
-                    A 201 success status code will be sent along with a message 
-                    telling the user that the account was successfully created.
-                */
+                    /* 
+                        A 201 success status code will be sent along with a message 
+                        telling the user that the account was successfully created.
+                    */
                     res.status(201).json(classToPlain(newUser));
                 } catch (err) {
                     console.log(err);
@@ -133,9 +133,14 @@ router.patch('/users/:userID', authorization, async (req, res) => {
                         .where("id = :id", { id: req.params.userID })
                         .execute();
 
+                    const session = encodeSession('CoronaChat', {
+                        id: userAccount.user_id,
+                        username: req.body.username
+                    });
+
                     /* A 201 success status code will be sent along with a message 
                         telling the user that the account was successfully created. */
-                    return res.status(201).send({ reason: 'Username changed' });
+                    return res.status(201).send({ session });
                 } catch (err) {
                     /* In any odd event something goes wrong whilst the account is being 
                         created, a 500 status code will be sent. */
@@ -222,11 +227,11 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 
 router.delete('/users/:userID', authorization, async (req, res) => {
     const server = await getRepository(Server).findOne({
-                where: {
-                    owner: req.params.userID
-                },
-                relations: ['channels']
-            }) as Server;
+        where: {
+            owner: req.params.userID
+        },
+        relations: ['channels']
+    }) as Server;
     const channels = server.channels
     channels.map(async a => await getRepository(Channel).remove(a));
     await getRepository(Server).remove(server);
