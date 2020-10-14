@@ -260,29 +260,6 @@ router.post('/users/login', async (req, res) => {
     }
 });
 
-
-// The function checks if there is a user with a certain ID that exists in the database
-async function accountcheck(userID: String): Promise<any> {
-    try {
-        // Establishes connection
-        const connection = await connect();
-
-        // SELECT search query to find if an account under the user ID exists
-        const accountQuery = await connection
-            .createQueryBuilder()
-            .select("user")
-            .from(User, "user")
-            .where("user.id = :id", { id: userID })
-            .getRawOne();
-
-        // Returns undefined if no match
-        return accountQuery;
-    } catch (err) {
-        // Throws an error if something goes wrong during the process
-        console.log(err);
-    }
-}
-
 // This is for the changeemail POST request to see if that email already exists on the system
 async function checkUserEmail(emailInput: String): Promise<any> {
     try {
