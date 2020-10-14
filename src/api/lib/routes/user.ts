@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { encodeSession } from '../functions';
 import { authorization } from '../middleware/authorization';
 import { connect } from '@orm/dbConfig';
-import { User } from '@orm/entities/User';
+import { Server, User, Channel } from '@orm/entities';
 import * as Snowflake from '@utils/Snowflake';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
@@ -91,7 +91,7 @@ router.post('/users', async (req, res) => {
     }
 })
 
-router.patch('/users/:userID', async (req, res) => {
+router.patch('/users/:userID', authorization, async (req, res) => {
     if (req.body.username !== undefined) {
         /*  The username regex variable will be compared with the username
         the user provides. The username will be considered valid
@@ -221,6 +221,15 @@ router.patch('/users/:userID', async (req, res) => {
 })
 
 router.delete('/users/:userID', authorization, async (req, res) => {
+    const server = await getRepository(Server).findOne({
+                where: {
+                    owner: req.params.userID
+                },
+                relations: ['channels']
+            }) as Server;
+    const channels = server.channels
+    channels.map(async a => await getRepository(Channel).remove(a));
+    await getRepository(Server).remove(server);
     await getRepository(User).delete(req.params.userID);
 
     res.status(200).send({ ok: true, status: 200, message: 'User Deleted' })
