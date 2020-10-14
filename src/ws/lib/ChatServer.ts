@@ -38,7 +38,7 @@ export class ChatServer {
         //socket events
         this.io.use(wsAuthorization);
         this.io.on(ChatEvent.CONNECT, async (socket: any) => {
-            console.log('Connected client on port %s.', this.port); 
+            console.log('Connected client on port %s.', this.port);
             const servers = await getRepository(Server).find({
                 select: ['id', 'name'],
                 where: {
@@ -54,6 +54,7 @@ export class ChatServer {
         });
 
         const servers = this.io.of(/^\/\d+$/);
+        servers.use(wsAuthorization);
         servers.on(ChatEvent.CONNECT, async (socket) => {
             const server = socket.nsp;
             console.log('Connected client to namespace %s.', server.name);
@@ -65,7 +66,7 @@ export class ChatServer {
                 }
             })
 
-            channels.sort((a,b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0)); 
+            channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
 
             socket.emit(ChatEvent.CHANNEL, channels);
 
@@ -100,10 +101,8 @@ export class ChatServer {
     }
 
     private async updateMembers(nsp: socketIO.Namespace) {
-        nsp.clients((err: any, clients: []) => {
-            if (err) throw err;
-            console.log(clients)
-            nsp.emit(ChatEvent.MEMBERLIST, clients);
-        })
+        const members = Object.values(nsp.connected).map(s => s.session.username)
+        console.log(members)
+        nsp.emit(ChatEvent.MEMBERLIST, members);
     }
 }
