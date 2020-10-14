@@ -3,8 +3,8 @@ const https = require('https')
 const expect = require('expect.js')
 
 let loginDetails = {
-    "email": "louisM@gmail.com",
-    "password": "passWord123"
+    "email": "louisM2@gmail.com",
+    "password": "louismanabat123"
 }
 
 describe('Login API', function() {
@@ -15,7 +15,6 @@ describe('Login API', function() {
             headers: { 'Content-type': 'application/json' },
             agent: new https.Agent({ rejectUnauthorized: false})
         })
-        expect(res.status).to.be(201);
-        done();
+        expect(res.status).to.be(200);
     })
 })
