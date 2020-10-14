@@ -13,6 +13,7 @@
         "clean": "rm -r dist",
         "start": "node dist/index.js",
         "nodemon": "nodemon dist/index.js",
+        "typeorm": "node -r module-alias/register ./node_modules/typeorm/cli.js",
         "ssl": "openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert",
         "mocha-reg": "mocha mocha/register.test.js",
         "mocha-login": "mocha mocha/login.test.js",

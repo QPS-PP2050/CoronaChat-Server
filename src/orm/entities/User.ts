@@ -7,18 +7,17 @@ import { Server } from './Server';
 export class User extends Structure {
 
     @Column({
-        type: "text",
-        nullable: true
+        type: "text"
     })
-    username: string | null = null;
+    username!: string;
 
     @Exclude()
     @Column("text")
-    password: string | null = null;
+    password!: string;
 
     @Exclude()
     @Column("text")
-    email: string | null = null;
+    email!: string;
 
     @ManyToMany(type => Server, server => server.members)
     servers?: Server[];
