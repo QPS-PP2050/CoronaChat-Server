@@ -1,3 +1,9 @@
+export interface ChatMessage {
+    channel: string;
+    author: string;
+    message: string;
+}
+
 export interface Session {
     id: number;
     username: string;

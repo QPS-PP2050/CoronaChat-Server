@@ -1,5 +1,5 @@
 import { encodeSession, decodeSession, checkExpiration } from '../functions'
-import type { Session, DecodeResult, ExpirationStatus } from '../types'
+import type { Session, DecodeResult, ExpirationStatus } from '@utils/Types'
 
 import type { Request, Response, NextFunction } from "express";
 

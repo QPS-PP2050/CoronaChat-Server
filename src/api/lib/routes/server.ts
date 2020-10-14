@@ -3,9 +3,8 @@ import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
 import { authorization } from '../middleware/authorization';
 import * as Snowflake from '@utils/Snowflake';
-import { Server } from '@orm/entities/Server';
-import { Channel } from '@orm/entities/Channel';
-import { User } from '@orm/entities/User';
+import { Server, Channel, User } from '@orm/entities';
+import { ChannelType } from '@utils/Constants';
 
 const router = Router();
 
@@ -24,15 +23,18 @@ router.post('/servers', authorization, async (req, res) => {
     const channel = new Channel();
     channel.id = Snowflake.generate();
     channel.name = 'general';
+    channel.type = ChannelType.TEXT;
     channel.server = server;
 
-    // const member = new Member();
-    // member.user = req.body.ownerID;
-    // member.server = server;
+    const voiceChannel = new Channel();
+    voiceChannel.id = Snowflake.generate();
+    voiceChannel.name = 'voice';
+    voiceChannel.type = ChannelType.VOICE;
+    voiceChannel.server = server;
 
     await getRepository(Server).save(server);
     await getRepository(Channel).save(channel);
-    // await getRepository(Member).save(member);
+    await getRepository(Channel).save(voiceChannel);
     res.status(201).json(classToPlain(server));
     console.log(server);
  })
@@ -51,6 +53,7 @@ router.post('/servers/:serverId/channels', authorization, async (req, res) => {
     const channel = new Channel();
     channel.id = Snowflake.generate();
     channel.name = req.body.name;
+    channel.type = req.body.type;
     channel.server = await getRepository(Server).findOne(req.params.serverId) as Server;
 
     await getRepository(Channel).save(channel);

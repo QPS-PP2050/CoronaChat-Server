@@ -6,6 +6,7 @@ import { connect } from '@orm/dbConfig';
 import { User } from '@orm/entities/User';
 import * as Snowflake from '@utils/Snowflake';
 import { getRepository } from 'typeorm';
+import { classToPlain } from 'class-transformer';
 
 const router = Router();
 
@@ -68,15 +69,17 @@ router.post('/users', async (req, res) => {
                     newUser.id = Snowflake.generate();
                     newUser.password = hashedPassword;
                     newUser.email = req.body.email;
+                    newUser.username = req.body.username;
                     await connection.manager.save(newUser);
+
+                /* 
+                    A 201 success status code will be sent along with a message 
+                    telling the user that the account was successfully created.
+                */
+                    res.status(201).json(classToPlain(newUser));
                 } catch (err) {
                     console.log(err);
                 }
-                /* 
-                A 201 success status code will be sent along with a message 
-                    telling the user that the account was successfully created.
-                */
-                res.status(201).send({ reason: 'Account created' });
             } catch {
                 /* 
                 In any odd event something goes wrong whilst the account is being 

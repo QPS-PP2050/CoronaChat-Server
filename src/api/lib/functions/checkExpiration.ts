@@ -1,4 +1,4 @@
-import type { ExpirationStatus, Session } from '../types';
+import type { ExpirationStatus, Session } from '@utils/Types';
 
 export function checkExpiration(token: Session): ExpirationStatus {
     const now = Date.now();
