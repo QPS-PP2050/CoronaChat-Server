@@ -53,6 +53,7 @@
         "@https": "dist/https",
         "@utils": "dist/utils",
         "@ws": "dist/ws",
-        "@api": "dist/api"
+        "@api": "dist/api",
+        "@root": "dist"
     }
 }
