@@ -3,7 +3,7 @@ const https = require('https')
 const expect = require('expect.js')
 
 let registrationDetails = {
-    "email": "louisM@gmail.com",
+    "email": "louisM2@gmail.com",
     "password": "passWord123"
 }
 
@@ -16,6 +16,5 @@ describe('Register API', function () {
             agent: new https.Agent({ rejectUnauthorized: false })
         })
         expect(res.status).to.be(201);
-        done();
     })
 })
