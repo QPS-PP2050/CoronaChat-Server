@@ -9,8 +9,6 @@ let registrationDetails = {
 
 describe('Register API', function () {
     it('Should register a new user and return 201', async function () {
-        // Add delete user here
-
         const res = await fetch('https://localhost:8080/api/users', {
             method: 'POST',
             body: JSON.stringify(registrationDetails),
