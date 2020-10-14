@@ -19,24 +19,24 @@ POST https://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
-    "email": "louis3@gmail.com",
-    "password": "testPassword"
+    "email": "louis1@gmail.com",
+    "password": "testingPassword"
 }
 
 ###
 
 // Change username request ('id' will vary)
-PATCH https://localhost:8080/api/users/13193204077821952
+PATCH https://localhost:8080/api/users/13173988394139648
 Content-Type: application/json
 
 { 
-    "username": "testname12"
+    "username": "louistest"
 }
 
 ###
 
 // Change password request ('id' will vary)
-PATCH https://localhost:8080/api/users/13193204077821952
+PATCH https://localhost:8080/api/users/13173988394139648
 Content-Type: application/json
 
 { 
@@ -46,9 +46,9 @@ Content-Type: application/json
 ###
 
 // Change email request ('id' will vary) 
-PATCH https://localhost:8080/api/users/13193204077821952
+PATCH https://localhost:8080/api/users/13173988394139648
 Content-Type: application/json
 
 { 
-    "email": "testname12.1@gmail.com"
+    "email": "louis1@gmail.com"
 }
