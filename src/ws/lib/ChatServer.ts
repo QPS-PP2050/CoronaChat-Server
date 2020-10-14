@@ -39,14 +39,15 @@ export class ChatServer {
         this.io.use(wsAuthorization);
         this.io.on(ChatEvent.CONNECT, async (socket: any) => {
             console.log('Connected client on port %s.', this.port);
-            const servers = await getRepository(Server).find({
-                select: ['id', 'name'],
-                where: {
-                    owner: socket.session.id
-                }
-            })
+            
+            const serverList = await this.updateServers(socket.session.id);
+            this.io.emit('servers', serverList);
 
-            this.io.emit('servers', servers);
+            socket.on('invite-user', async (data: any) => {
+                if (socket.session.username !== data.username) return;
+                const updatedServers = await this.updateServers(socket.session.id)
+                this.io.emit('servers', updatedServers);
+            })
 
             socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
@@ -98,6 +99,16 @@ export class ChatServer {
         servers.use((socket, next) => {
             next();
         })
+    }
+
+    private async updateServers(userID: string) {
+        const servers = await getRepository(Server)
+            .createQueryBuilder('server')
+            .leftJoinAndSelect('server.members', 'user')
+            .where('user.id = :id', { id: userID })
+            .getMany();
+        console.log(servers);
+        return servers;
     }
 
     private async updateMembers(nsp: socketIO.Namespace) {

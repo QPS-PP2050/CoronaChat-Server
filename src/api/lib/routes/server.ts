@@ -11,7 +11,7 @@ const router = Router();
 
 // Removed temporarily in favour of automatically creating a single server per user
 router.post('/servers', authorization, async (req, res) => {
-     // Placeholder to Create Server
+    // Placeholder to Create Server
     const user = await getRepository(User).findOne(req.body.ownerID) as User;
 
     const server = new Server();
@@ -37,12 +37,12 @@ router.post('/servers', authorization, async (req, res) => {
     await getRepository(Channel).save(voiceChannel);
     res.status(201).json(classToPlain(server));
     console.log(server);
- })
+})
 
- router.get('/servers/:serverId/channels', authorization, async (req, res) => {
+router.get('/servers/:serverId/channels', authorization, async (req, res) => {
     // Placeholder to get channels
     const server = await getRepository(Server)
-    .findOne(req.params.serverId, {relations: ['channels']}) as Server;
+        .findOne(req.params.serverId, { relations: ['channels'] }) as Server;
 
     res.status(200).send(server.channels)
     console.log(server.channels)
@@ -62,17 +62,41 @@ router.post('/servers/:serverId/channels', authorization, async (req, res) => {
 })
 
 router.get('/servers/:serverId', authorization, async (req, res) => {
-   const serverID = req.params.serverId;
+    const serverID = req.params.serverId;
+    const server = await getRepository(Server)
+        .findOne(serverID, { relations: ['channels', 'owner', 'members'] })
 
-    const server = await getRepository(Server).findOne(serverID, {relations: ['channels', 'owner', 'members']})
-    
     res.status(200).send(classToPlain(server))
     console.log(classToPlain(server))
 })
 
+router.put('/servers/:serverId/members', authorization, async (req, res) => {
+    const serverID = req.params.serverId;
+    const username = req.body.username;
+
+    const user = await getRepository(User)
+        .findOne({
+            where: {
+                username: username
+            }
+        }) as User;
+
+    const server = await getRepository(Server)
+        .findOne(serverID, {
+            relations: ['members']
+        }) as Server;
+
+    server.members.push(user);
+    await getRepository(Server)
+        .save(server);
+
+    res.status(201).send({ ok: true, message: "User added to server" });
+    console.log(server);
+})
+
 router.patch('/servers/:serverId', authorization, async (req, res) => {
     // Placeholder to RESET server
-    
+
 
 })
 

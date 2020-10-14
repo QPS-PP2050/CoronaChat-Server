@@ -140,7 +140,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 
                     /* A 201 success status code will be sent along with a message 
                         telling the user that the account was successfully created. */
-                    return res.status(201).send({ session });
+                    return res.status(201).send({ session, reason: 'Username changed successfully' });
                 } catch (err) {
                     /* In any odd event something goes wrong whilst the account is being 
                         created, a 500 status code will be sent. */
