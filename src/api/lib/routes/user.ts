@@ -210,7 +210,7 @@ router.patch('/users/:userID', async (req, res) => {
         } catch (err) {
             /* In any odd event something goes wrong whilst the account is being 
                 created, a 500 status code will be sent. */
-                res.status(500).send({ reason: 'Unknown Error' });
+            res.status(500).send({ reason: 'Unknown Error' });
         }
     } else {
         res.status(500).send({ reason: 'Invalid body' });
