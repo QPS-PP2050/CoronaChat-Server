@@ -71,8 +71,9 @@ export class ChatServer {
 
             socket.emit(ChatEvent.CHANNEL, channels);
 
-            socket.join('general', () => {
-                socket.room = 'general'
+            const generalChannel = channels.find(c => c.name === "general")!.id
+            socket.join(generalChannel, () => {
+                socket.room = generalChannel
             });
             console.log(socket.rooms)
             this.updateMembers(server);

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
+import { setupUser } from '../functions';
 import { authorization } from '../middleware/authorization';
 import * as Snowflake from '@utils/Snowflake';
 import { Server, Channel, User } from '@orm/entities';
-import { ChannelType } from '@utils/Constants';
 
 const router = Router();
 
@@ -14,27 +14,8 @@ router.post('/servers', authorization, async (req, res) => {
     // Placeholder to Create Server
     const user = await getRepository(User).findOne(req.body.ownerID) as User;
 
-    const server = new Server();
-    server.id = Snowflake.generate();
-    server.name = req.body.name;
-    server.owner = req.body.ownerID;
-    server.members = [user]
-
-    const channel = new Channel();
-    channel.id = Snowflake.generate();
-    channel.name = 'general';
-    channel.type = ChannelType.TEXT;
-    channel.server = server;
-
-    const voiceChannel = new Channel();
-    voiceChannel.id = Snowflake.generate();
-    voiceChannel.name = 'voice';
-    voiceChannel.type = ChannelType.VOICE;
-    voiceChannel.server = server;
-
-    await getRepository(Server).save(server);
-    await getRepository(Channel).save(channel);
-    await getRepository(Channel).save(voiceChannel);
+    const server = await setupUser(req, user);
+    
     res.status(201).json(classToPlain(server));
     console.log(server);
 })

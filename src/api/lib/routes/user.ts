@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Router } from 'express';
-import { encodeSession } from '../functions';
+import { encodeSession, setupUser } from '../functions';
 import { authorization } from '../middleware/authorization';
 import { connect } from '@orm/dbConfig';
 import { Server, User, Channel } from '@orm/entities';
@@ -71,6 +71,8 @@ router.post('/users', async (req, res) => {
                     newUser.email = req.body.email;
                     newUser.username = req.body.username;
                     await connection.manager.save(newUser);
+
+                    await setupUser(req, newUser);
 
                     /* 
                         A 201 success status code will be sent along with a message 
