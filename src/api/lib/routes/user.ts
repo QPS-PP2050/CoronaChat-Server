@@ -228,18 +228,12 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 })
 
 router.delete('/users/:userID', authorization, async (req, res) => {
-    const server = await getRepository(Server).findOne({
-        where: {
-            owner: req.params.userID
-        },
-        relations: ['channels']
-    }) as Server;
-    const channels = server.channels
-    channels.map(async a => await getRepository(Channel).remove(a));
-    await getRepository(Server).remove(server);
-    await getRepository(User).delete(req.params.userID);
-
-    res.status(200).send({ ok: true, status: 200, message: 'User Deleted' })
+    try {
+        await getRepository(User).delete(req.params.userID);
+        res.status(200).send({ ok: true, status: 200, message: 'User Deleted' })
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 // This following post request will login an existing user from the database
