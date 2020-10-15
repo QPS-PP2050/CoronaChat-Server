@@ -41,7 +41,7 @@ export class ChatServer {
             console.log('Connected client on port %s.', this.port);
             
             const serverList = await this.updateServers(socket.session.id);
-            this.io.emit('servers', serverList);
+            socket.emit('servers', serverList);
 
             socket.on('invite-user', async (data: any) => {
                 if (socket.session.username !== data.username) return;
