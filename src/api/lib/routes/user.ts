@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { encodeSession, setupUser } from '../functions';
 import { authorization } from '../middleware/authorization';
 import { connect } from '@orm/dbConfig';
-import { Server, User, Channel } from '@orm/entities';
+import { User } from '@orm/entities';
 import * as Snowflake from '@utils/Snowflake';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
