@@ -55,6 +55,7 @@ router.put('/servers/:serverId/members', authorization, async (req, res) => {
     const serverID = req.params.serverId;
     const username = req.body.username;
 
+    console.log(serverID);
     const user = await getRepository(User)
         .findOne({
             where: {
