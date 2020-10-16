@@ -28,19 +28,13 @@ router.get('/users', async (req, res) => {
 })
 
 router.post('/users', async (req, res) => {
-    /*  The email regex variable will be compared with the
-        email the user provides. The email will be considered valid
-        based on certain conditions:
-        - If there are no illegal characters (only dash and underscore allowed)
-        - If the beginning character is alphanumeric
-        - An '@' is present and does not have a dot before or after it
-        - No consecutive dots */
-    var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+    var emailRegex = /(?:[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    var usernameRegex = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
     // Var below will compare the user input with regex above to see if it is a valid email
-    var compare = req.body.email.match(emailRegex);
+    var compareEmail = req.body.email.match(emailRegex);
+    var compareUsername = req.body.username.match(usernameRegex);
 
-    if (!compare) {
+    if (!compareEmail && !compareUsername) {
         /* If email is invalid, a 400 error status code will be sent indicating 
             that the email format is invalid */
         return res.status(400).send({ reason: 'Email/username is using invalid characters' });
@@ -95,14 +89,7 @@ router.post('/users', async (req, res) => {
 
 router.patch('/users/:userID', authorization, async (req, res) => {
     if (req.body.username !== undefined) {
-        /*  The username regex variable will be compared with the username
-        the user provides. The username will be considered valid
-        based on certain conditions:
-        - If there are no illegal characters 
-        - If the beginning character is a letter
-        - Only contains lowercase letters and numbers between 0 to 9
-        - Is between 8 to 16 characters */
-        var usernameRegex = /^\D[a-z0-9]{8,16}$/;
+        var usernameRegex = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
 
         // Var below will compare the user input with regex above to see if it is a valid username
         var compare = req.body.username.match(usernameRegex);
@@ -151,14 +138,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
             }
         }
     } else if (req.body.email !== undefined) {
-        /* The email regex variable will be compared with the
-        email the user provides. The email will be considered valid
-        based on certain conditions:
-        - If there are no illegal characters (only dash and underscore allowed)
-        - If the beginning character is alphanumeric
-        - An '@' is present and does not have a dot before or after it
-        - No consecutive dots */
-        var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        var emailRegex = /(?:[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
         // Var below will compare the user input with regex above to see if it is a valid email
         var compare = req.body.email.match(emailRegex);
