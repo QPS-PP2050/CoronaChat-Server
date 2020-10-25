@@ -9,11 +9,11 @@ export class Server extends Structure {
     @Column("text")
     name: string | null = null;
 
-    @OneToOne(type => User)
+    @OneToOne(type => User, { onDelete: 'CASCADE'})
     @JoinColumn()
     owner!: User;
 
-    @ManyToMany(type => User, user => user.servers)
+    @ManyToMany(type => User, user => user.servers, { onDelete: 'CASCADE' })
     @JoinTable({
         name: "members",
         joinColumn: {

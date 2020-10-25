@@ -12,7 +12,7 @@ export class Channel extends Structure {
     @Column("text")
     name!: string;
 
-    @ManyToOne(type => Server, server => server.channels)
+    @ManyToOne(type => Server, server => server.channels, { onDelete: 'CASCADE' })
     server!: Server;
 
 }
