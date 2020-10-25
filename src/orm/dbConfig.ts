@@ -21,8 +21,8 @@ export const config: ConnectionOptions = {
         join(__dirname, 'subscriber/*.js')
     ],
     cli: {
-        entitiesDir: "src/orm/entity",
-        migrationsDir: "src/orm/migration",
+        entitiesDir: "src/orm/entities",
+        migrationsDir: "src/orm/migrations",
         subscribersDir: "src/orm/subscriber"
     }
 }

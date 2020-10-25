@@ -1,16 +1,16 @@
-import {Entity, Column} from "typeorm";
+// import {Entity, Column} from "typeorm";
 import { Structure } from "./Structure";
 
-@Entity()
+// @Entity()
 export class Message extends Structure {
 
-    @Column("text")
+    // @Column("text")
     content: string | null = null;
 
-    @Column("text")
+    // @Column("text")
     userID: string | null = null;
 
-    @Column("text")
+    // @Column("text")
     channelID: string | null = null;
 
 }
