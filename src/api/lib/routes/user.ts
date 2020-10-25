@@ -123,7 +123,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
                         .execute();
 
                     const session = encodeSession('CoronaChat', {
-                        id: userAccount.user_id,
+                        id: parseInt(req.params.userID),
                         username: req.body.username
                     });
 
@@ -131,6 +131,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
                         telling the user that the account was successfully created. */
                     return res.status(201).send({ session, reason: 'Username changed successfully' });
                 } catch (err) {
+                    console.error(err);
                     /* In any odd event something goes wrong whilst the account is being 
                         created, a 500 status code will be sent. */
                     res.status(500).send({ reason: 'Unknown Error' });
