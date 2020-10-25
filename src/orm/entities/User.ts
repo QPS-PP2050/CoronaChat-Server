@@ -19,6 +19,9 @@ export class User extends Structure {
     @Column("text")
     email!: string;
 
+    @Column("text")
+    avatarURL!: string;
+
     @ManyToMany(type => Server, server => server.members, { onDelete: 'CASCADE' })
     servers?: Server[];
 }

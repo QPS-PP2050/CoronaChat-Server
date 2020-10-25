@@ -5,9 +5,11 @@ import { authorization } from '../middleware/authorization';
 import { connect } from '@orm/dbConfig';
 import { User } from '@orm/entities';
 import * as Snowflake from '@utils/Snowflake';
+import { createHash } from 'crypto';
 import { getRepository } from 'typeorm';
 import { classToPlain } from 'class-transformer';
 
+const hash = (toHash: string) => createHash('md5').update(toHash).digest("hex");
 const router = Router();
 
 // The following get request will return the list of users in a json format
@@ -64,6 +66,7 @@ router.post('/users', async (req, res) => {
                     newUser.password = hashedPassword;
                     newUser.email = req.body.email;
                     newUser.username = req.body.username;
+                    newUser.avatarURL = `https://www.gravatar.com/avatar/${hash(newUser.email.trim().toLowerCase())}&d=retro`
                     await connection.manager.save(newUser);
 
                     await setupUser(req, newUser);
