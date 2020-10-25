@@ -1,6 +1,5 @@
 import { HttpsServer } from '@https/lib/HttpsServer';
-import { Server } from '@orm/entities/Server';
-import { Channel } from '@orm/entities/Channel';
+import { Channel, Server, User } from '@orm/entities';
 import { ChatEvent } from '@utils/Constants';
 import { wsAuthorization } from './middleware/wsAuthorization';
 import { getRepository } from 'typeorm';
@@ -39,7 +38,10 @@ export class ChatServer {
         this.io.use(wsAuthorization);
         this.io.on(ChatEvent.CONNECT, async (socket: any) => {
             console.log('Connected client on port %s.', this.port);
-            
+
+            const userProfile = await this.getProfile(socket.session.id);
+            socket.emit('profile', userProfile)
+
             const serverList = await this.updateServers(socket.session.id);
             socket.emit('servers', serverList);
 
@@ -114,7 +116,29 @@ export class ChatServer {
 
     private async updateMembers(nsp: socketIO.Namespace) {
         const members = Object.values(nsp.connected).map(s => s.session.username)
-        console.log(members)
-        nsp.emit(ChatEvent.MEMBERLIST, members);
+        if (members.length > 0) {
+            const memberAvatars = await getRepository(User)
+                .createQueryBuilder('user')
+                .select(['user.avatarURL', 'user.username'])
+                .where('user.username IN (:...names)', { names: members })
+                .getMany()
+
+            console.log(memberAvatars)
+
+            return nsp.emit(ChatEvent.MEMBERLIST, memberAvatars);
+        } else {
+            return nsp.emit(ChatEvent.MEMBERLIST, [])
+        }
+    }
+
+    private async getProfile(id: string) {
+        const memberAvatars = await getRepository(User)
+            .createQueryBuilder('user')
+            .select('user.avatarURL')
+            .where('user.id = :id', { id: id })
+            .getOne()
+
+        console.log(memberAvatars)
+        return memberAvatars!.avatarURL;
     }
 }
