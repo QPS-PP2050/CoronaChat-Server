@@ -1,7 +1,8 @@
 import { ConnectionOptions, Connection, getConnection, createConnection } from 'typeorm';
 import { join } from 'path';
 import dotEnvExtended from 'dotenv-extended';
-const dotenvParseVariables = require('dotenv-parse-variables');
+import * as dotenvParseVariables from 'dotenv-parse-variables';
+// const dotenvParseVariables = require('dotenv-parse-variables');
 
 interface EnvConfig {
     DATABASE_HOST: string;
