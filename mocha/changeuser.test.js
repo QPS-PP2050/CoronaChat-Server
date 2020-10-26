@@ -19,6 +19,5 @@ describe('Login API', function() {
             agent: new https.Agent({ rejectUnauthorized: false})
         })
         expect(res.status).to.be(201);
-        done();
     })
 })
