@@ -28,7 +28,7 @@ export function authorization(request: Request, response: Response, next: NextFu
 		return;
 	}
 
-	header = header.split(' ')[1];
+	[, header] = header.split(' ');
 
 	const decodedSession: DecodeResult = decodeSession(secretKey, header);
 
@@ -44,7 +44,7 @@ export function authorization(request: Request, response: Response, next: NextFu
 		return;
 	}
 
-	let session: Session;
+	let session: Session | null = null;
 
 	if (expiration === 'grace') {
 		// Automatically renew the session and send it back with the response

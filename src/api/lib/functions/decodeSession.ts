@@ -5,10 +5,13 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
 	// Always use HS512 to decode the token
 	const algorithm: TAlgorithm = 'HS512';
 
-	let result: Session;
-
 	try {
-		result = decode(tokenString, secretKey, false, algorithm);
+		const result: Session = decode(tokenString, secretKey, false, algorithm);
+
+		return {
+			type: 'valid',
+			session: result
+		};
 	} catch (_e) {
 		const e: Error = _e;
 
@@ -35,9 +38,4 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
 
 		throw e;
 	}
-
-	return {
-		type: 'valid',
-		session: result
-	};
 }

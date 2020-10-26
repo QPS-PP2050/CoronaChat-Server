@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner, Table, TableColumn, TableForeignKey } 
 export class CreateChannel1602704072939 implements MigrationInterface {
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		queryRunner.createTable(
+		await queryRunner.createTable(
 			new Table({
 				name: 'channel',
 				columns: [

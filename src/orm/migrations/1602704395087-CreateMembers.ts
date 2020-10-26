@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner, Table, TableColumn, TableForeignKey } 
 export class CreateMembers1602704395087 implements MigrationInterface {
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		queryRunner.createTable(
+		await queryRunner.createTable(
 			new Table({
 				name: 'members',
 				columns: [

@@ -5,12 +5,12 @@ import { Structure } from './Structure';
 export class Message extends Structure {
 
 	// @Column("text")
-	content: string | null = null;
+	public content: string | null = null;
 
 	// @Column("text")
-	userID: string | null = null;
+	public userID: string | null = null;
 
 	// @Column("text")
-	channelID: string | null = null;
+	public channelID: string | null = null;
 
 }

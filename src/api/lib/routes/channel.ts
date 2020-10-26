@@ -23,8 +23,9 @@ router.get('/channels/:channelId', authorization, async (req, res) => {
 	res.status(200).send(channel);
 });
 
-router.delete('channels/:channelId', authorization, async (req, res) => {
+/* router.delete('channels/:channelId', authorization, async (req, res) => {
 	// Placeholder to delete channel
 });
+*/
 
 export default router;

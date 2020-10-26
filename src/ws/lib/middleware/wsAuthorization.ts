@@ -2,7 +2,7 @@ import { decodeSession } from '@api/lib/functions';
 
 import type { Socket } from 'socket.io';
 import type { NextFunction } from 'express';
-import type { DecodeResult, Session } from '@utils/Types';
+import type { DecodeResult } from '@utils/Types';
 
 export function wsAuthorization(socket: Socket, next: NextFunction) {
 	const secretKey = 'CoronaChat';
@@ -18,7 +18,7 @@ export function wsAuthorization(socket: Socket, next: NextFunction) {
 		return 'Invalid authorization type provided.';
 
 	}
-	sessionToken = sessionToken.split(' ')[1];
+	[, sessionToken] = sessionToken.split(' ');
 
 	const decodedSession: DecodeResult = decodeSession(secretKey, sessionToken);
 

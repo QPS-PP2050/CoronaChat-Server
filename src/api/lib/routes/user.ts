@@ -95,7 +95,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 		let usernameRegex = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
 
 		// Var below will compare the user input with regex above to see if it is a valid username
-		var compare = req.body.username.match(usernameRegex);
+		const compare = req.body.username.match(usernameRegex);
 
 		if (!compare) {
 			/* If username is invalid, a 400 error status code will be sent indicating
@@ -126,7 +126,7 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 				.execute();
 
 			const session = encodeSession('CoronaChat', {
-				id: parseInt(req.params.userID),
+				id: parseInt(req.params.userID, 10),
 				username: req.body.username
 			});
 
@@ -142,10 +142,10 @@ router.patch('/users/:userID', authorization, async (req, res) => {
 
 
 	} else if (req.body.email !== undefined) {
-		let emailRegex = /(?:[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+		const emailRegex = /(?:[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
 		// Var below will compare the user input with regex above to see if it is a valid email
-		var compare = req.body.email.match(emailRegex);
+		const compare = req.body.email.match(emailRegex);
 
 		/* If email is invalid, a 400 error status code will be sent indicating
             that the email format is invalid. */
@@ -227,7 +227,7 @@ router.post('/users/login', async (req, res) => {
 
 	/* If the account already exists, a 400 status code error will be sent along with
         a message telling the user there is no account under that email. */
-	if (userAccount == undefined) {
+	if (userAccount === undefined) {
 		/*
         If the account already exists, a 400 status code error will be sent along with
             a message telling the user there is no account under that email.

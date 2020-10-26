@@ -3,14 +3,14 @@ export function binaryToID(num: any) {
 
 	while (num.length > 50) {
 		const high = parseInt(num.slice(0, -32), 2);
-		const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
+		const low = parseInt((high % 10).toString(2) + num.slice(-32), 2); // eslint-disable-line @typescript-eslint/restrict-plus-operands
 
 		dec = (low % 10).toString() + dec;
 		num
-            = Math.floor(high / 10).toString(2) +
-            Math.floor(low / 10)
-            	.toString(2)
-            	.padStart(32, '0');
+			= Math.floor(high / 10).toString(2) +
+			Math.floor(low / 10)
+				.toString(2)
+				.padStart(32, '0');
 	}
 
 	num = parseInt(num, 2);
@@ -24,8 +24,8 @@ export function binaryToID(num: any) {
 
 export function idToBinary(num: any) {
 	let bin = '';
-	let high = parseInt(num.slice(0, -10)) || 0;
-	let low = parseInt(num.slice(-10));
+	let high = parseInt(num.slice(0, -10), 10) || 0;
+	let low = parseInt(num.slice(-10), 10);
 	while (low > 0 || high > 0) {
 		bin = String(low & 1) + bin;
 		low = Math.floor(low / 2);

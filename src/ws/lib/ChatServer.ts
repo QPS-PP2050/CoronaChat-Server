@@ -78,7 +78,7 @@ export class ChatServer {
 				socket.room = generalChannel;
 			});
 			console.log(socket.rooms);
-			this.updateMembers(server);
+			await this.updateMembers(server);
 
 			socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
 				console.log(channelID);
@@ -94,8 +94,8 @@ export class ChatServer {
 				server.to(m.channel).emit('message', m);
 			});
 
-			socket.on(ChatEvent.DISCONNECT, () => {
-				this.updateMembers(server);
+			socket.on(ChatEvent.DISCONNECT, async () => {
+				await this.updateMembers(server);
 			});
 		});
 

@@ -76,11 +76,12 @@ router.put('/servers/:serverId/members', authorization, async (req, res) => {
 	console.log(server);
 });
 
-router.patch('/servers/:serverId', authorization, async (req, res) => {
+/* router.patch('/servers/:serverId', authorization, async (req, res) => {
 	// Placeholder to RESET server
 
 
 });
+*/
 
 /* Removed temporarily
 router.delete('/servers/:serverId', (req, res) => {

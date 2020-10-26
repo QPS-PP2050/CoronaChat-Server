@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Entity, Column, ManyToMany, OneToMany, OneToOne, JoinColumn, JoinTable } from 'typeorm';
 import { Structure } from './Structure';
 import { Channel } from './Channel';
@@ -7,11 +9,11 @@ import { User } from './User';
 export class Server extends Structure {
 
 	@Column('text')
-	name: string | null = null;
+	public name: string | null = null;
 
 	@OneToOne(type => User, { onDelete: 'CASCADE' })
 	@JoinColumn()
-	owner!: User;
+	public owner!: User;
 
 	@ManyToMany(type => User, user => user.servers, { onDelete: 'CASCADE' })
 	@JoinTable({
@@ -26,9 +28,9 @@ export class Server extends Structure {
 		}
 
 	})
-	members!: User[];
+	public members!: User[];
 
 	@OneToMany(type => Channel, channel => channel.server)
-	channels!: Channel[];
+	public channels!: Channel[];
 
 }

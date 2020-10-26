@@ -6,7 +6,7 @@ import { HttpsServer } from './https';
 import { ChatServer } from './ws';
 import { Api } from './api';
 
-connect().then(() => {
+void connect().then(() => {
 	const https = new HttpsServer();
 
 	new ChatServer(https.server);

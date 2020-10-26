@@ -31,15 +31,15 @@ export interface EncodeResult {
 }
 
 export type DecodeResult =
-    | {
-    	type: 'valid';
-    	session: Session;
-    }
-    | {
-    	type: 'integrity-error';
-    }
-    | {
-    	type: 'invalid-token';
-    };
+	| {
+		type: 'valid';
+		session: Session;
+	}
+	| {
+		type: 'integrity-error';
+	}
+	| {
+		type: 'invalid-token';
+	};
 
 export type ExpirationStatus = 'expired' | 'active' | 'grace';
