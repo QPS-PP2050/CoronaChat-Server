@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import https from 'https';
-import expect from 'expect.js';
+import { Agent } from 'https';
+import { expect } from 'chai';;
 
 const date = new Date();
 const seconds = date.getTime() / 10000000000;
@@ -16,7 +16,7 @@ describe('Change Username API', () => {
 			method: 'PATCH',
 			body: JSON.stringify(changeUserDetails),
 			headers: { 'Content-type': 'application/json' },
-			agent: new https.Agent({ rejectUnauthorized: false })
+			agent: new Agent({ rejectUnauthorized: false })
 		});
 		expect(res.status).to.be(201);
 	});

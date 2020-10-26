@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import https from 'https';
-import expect from 'expect.js';
+import { Agent } from 'https';
+import { expect } from 'chai';;
 
 const date = new Date();
 const seconds = Math.round(date.getTime() / 100);
@@ -21,7 +21,7 @@ describe('Change Email API', () => {
 			method: 'PATCH',
 			body: JSON.stringify(changeUserDetails),
 			headers: { 'Content-type': 'application/json' },
-			agent: new https.Agent({ rejectUnauthorized: false })
+			agent: new Agent({ rejectUnauthorized: false })
 		});
 		expect(res.status).to.be(201);
 	});
@@ -31,7 +31,7 @@ describe('Change Email API', () => {
 			method: 'POST',
 			body: JSON.stringify(loginDetails),
 			headers: { 'Content-type': 'application/json' },
-			agent: new https.Agent({ rejectUnauthorized: false })
+			agent: new Agent({ rejectUnauthorized: false })
 		});
 		expect(res.status).to.be(200);
 	});

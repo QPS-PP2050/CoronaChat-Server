@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import https from 'https';
-import expect from 'expect.js';
+import { Agent } from 'https';
+import { expect } from 'chai';;
 
 const loginDetails = {
 	email: 'louisM2@gmail.com',
@@ -13,7 +13,7 @@ describe('Login API', () => {
 			method: 'POST',
 			body: JSON.stringify(loginDetails),
 			headers: { 'Content-type': 'application/json' },
-			agent: new https.Agent({ rejectUnauthorized: false })
+			agent: new Agent({ rejectUnauthorized: false })
 		});
 		expect(res.status).to.be(200);
 	});

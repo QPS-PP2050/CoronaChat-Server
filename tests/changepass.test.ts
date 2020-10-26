@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import https from 'https';
-import expect from 'expect.js';
+import { Agent } from 'https';
+import { expect } from 'chai';;
 
 const changeUserDetails = {
 	password: 'louismanabat123'
@@ -13,7 +13,7 @@ describe('Change Password API', () => {
 			method: 'PATCH',
 			body: JSON.stringify(changeUserDetails),
 			headers: { 'Content-type': 'application/json' },
-			agent: new https.Agent({ rejectUnauthorized: false })
+			agent: new Agent({ rejectUnauthorized: false })
 		});
 		expect(res.status).to.be(201);
 	});
