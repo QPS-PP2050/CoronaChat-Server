@@ -23,7 +23,7 @@ describe('Change Email API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be.equal(201);
+		expect(res.status).to.equal(201);
 	});
 
 	it('Should login an existing user and return 201', async () => {
@@ -33,6 +33,6 @@ describe('Change Email API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be.equal(200);
+		expect(res.status).to.equal(200);
 	});
 });

@@ -15,6 +15,6 @@ describe('Change Password API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be.equal(201);
+		expect(res.status).to.equal(201);
 	});
 });

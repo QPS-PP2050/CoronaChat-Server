@@ -17,7 +17,7 @@ describe('Register API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		return expect(res.status).to.be.equal(202);
+		return expect(res.status).to.equal(202);
 	});
 
 	it('Should register a new user and return 400', async () => {
@@ -27,7 +27,7 @@ describe('Register API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		return expect(res.status).to.be.equal(400);
+		return expect(res.status).to.equal(400);
 	});
 
 });
