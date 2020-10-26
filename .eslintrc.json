@@ -1,0 +1,6 @@
+{
+	"extends": "@skyra",
+	"rules": {
+		"@typescript-eslint/naming-convention": 0
+	}
+}
