@@ -51,8 +51,7 @@ jobs:
       - name: Run tests
         run: |
           yarn start &
-          npx wait-on https://localhost:8080 &&
-          yarn test:coverage
+          npx wait-on https://localhost:8080 && yarn test:coverage
           kill -9 `lsof -i:8080 -t`
       - name: Store code coverage report
         uses: actions/upload-artifact@v2
