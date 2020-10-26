@@ -49,7 +49,7 @@ jobs:
       - name: Compile TypeScript & Start server
         run: | 
           yarn build
-          yarn start & npx wait-on https://localhost:8080
+          yarn start & npx wait-on https://127.0.0.1:8080
       - name: Run tests
         run: |
           yarn test:coverage
