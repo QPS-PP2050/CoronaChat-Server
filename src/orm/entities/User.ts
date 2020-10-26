@@ -1,21 +1,27 @@
-import {Entity, Column} from "typeorm";
+import {Entity, Column, ManyToMany} from "typeorm";
 import { Exclude } from 'class-transformer';
 import { Structure } from "./Structure";
+import { Server } from './Server';
 
 @Entity()
 export class User extends Structure {
 
     @Column({
-        type: "text",
-        nullable: true
+        type: "text"
     })
-    username: string | null = null;
+    username!: string;
 
     @Exclude()
     @Column("text")
-    password: string | null = null;
+    password!: string;
 
     @Exclude()
     @Column("text")
-    email: string | null = null;
+    email!: string;
+
+    @Column("text")
+    avatarURL!: string;
+
+    @ManyToMany(type => Server, server => server.members, { onDelete: 'CASCADE' })
+    servers?: Server[];
 }

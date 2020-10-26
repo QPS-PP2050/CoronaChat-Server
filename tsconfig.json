@@ -6,8 +6,29 @@
         "outDir": "dist",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@orm/*": [
+                "orm/*"
+            ],
+            "@https/*": [
+                "https/*"
+            ],
+            "@utils/*": [
+                "utils/*"
+            ],
+            "@ws/*": [
+                "ws/*"
+            ],
+            "@api/*": [
+                "api/*"
+            ],
+            "@root/*": [
+                "*"
+            ]
+        }
     },
     "include": [
         "src"
-    ]
+    ],
 }

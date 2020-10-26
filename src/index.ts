@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import 'module-alias/register';
 
 import { connect } from './orm/dbConfig';
 import { HttpsServer } from './https';

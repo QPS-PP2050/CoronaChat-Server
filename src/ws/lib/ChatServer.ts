@@ -1,18 +1,28 @@
-import { HttpsServer } from '../../https/lib/HttpsServer';
-import { ChatEvent } from './Constants';
+import { HttpsServer } from '@https/lib/HttpsServer';
+import { Channel, Server, User } from '@orm/entities';
+import { ChatEvent } from '@utils/Constants';
+import { wsAuthorization } from './middleware/wsAuthorization';
+import { getRepository } from 'typeorm';
 import * as socketIO from 'socket.io';
 
-import type { ChatMessage } from './types/ChatMessage';
-import type { Server } from 'https';
-import type { Server as aServer } from 'http';
+import type { Server as httpsServer } from 'https';
+import type { Server as httpServer } from 'http';
+import type { ChatMessage, Session } from '@utils/Types';
+
+declare module 'socket.io' {
+    interface Socket {
+        room: string;
+        session: Session;
+    }
+}
 
 export class ChatServer {
 
-    private server: Server | aServer;
+    private server: httpsServer | httpServer;
     private port: string | number;
     private io!: SocketIO.Server;
 
-    public constructor(server: Server | aServer) {
+    public constructor(server: httpsServer | httpServer) {
         this.server = server;
         this.port = HttpsServer.PORT;
         this.initSocket();
@@ -25,27 +35,63 @@ export class ChatServer {
 
     private listen(): void {
         //socket events
-        this.io.on(ChatEvent.CONNECT, (socket: any) => {
+        this.io.use(wsAuthorization);
+        this.io.on(ChatEvent.CONNECT, async (socket: any) => {
             console.log('Connected client on port %s.', this.port);
-            /* socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
-                console.log('[server](message): %s', JSON.stringify(m));
-                this.io.emit('message', m);
-            }); */
+
+            const userProfile = await this.getProfile(socket.session.id);
+            socket.emit('profile', userProfile)
+
+            const serverList = await this.updateServers(socket.session.id);
+            socket.emit('servers', serverList);
+
+            socket.on('invite-user', async (data: any) => {
+                if (socket.session.username !== data.username) return;
+                const updatedServers = await this.updateServers(socket.session.id)
+                this.io.emit('servers', updatedServers);
+            })
+
             socket.on(ChatEvent.DISCONNECT, () => {
                 console.log('Client disconnected');
             });
         });
 
         const servers = this.io.of(/^\/\d+$/);
-        servers.on(ChatEvent.CONNECT, (socket) => {
+        servers.use(wsAuthorization);
+        servers.on(ChatEvent.CONNECT, async (socket) => {
             const server = socket.nsp;
             console.log('Connected client to namespace %s.', server.name);
-            socket.join('general');
+
+            const channels = await getRepository(Channel).find({
+                select: ['id', 'name', 'type'],
+                where: {
+                    server: server.name.split('/')[1]
+                }
+            })
+
+            channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
+
+            socket.emit(ChatEvent.CHANNEL, channels);
+
+            const generalChannel = channels.find(c => c.name === "general")!.id
+            socket.join(generalChannel, () => {
+                socket.room = generalChannel
+            });
+            console.log(socket.rooms)
             this.updateMembers(server);
+
+            socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
+                console.log(channelID)
+                if (socket.room !== channelID) {
+                    socket.leave(socket.room);
+                    socket.room = channelID;
+                    socket.join(channelID);
+                }
+            })
 
             socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {
                 console.log(`${server.name}(message): %s`, JSON.stringify(m))
-                server.to('general').emit('message', m);
+                server.to(m.channel).emit('message', m);
             })
 
             socket.on(ChatEvent.DISCONNECT, () => {
@@ -58,11 +104,41 @@ export class ChatServer {
         })
     }
 
+    private async updateServers(userID: string) {
+        const servers = await getRepository(Server)
+            .createQueryBuilder('server')
+            .leftJoinAndSelect('server.members', 'user')
+            .where('user.id = :id', { id: userID })
+            .getMany();
+        console.log(servers);
+        return servers;
+    }
+
     private async updateMembers(nsp: socketIO.Namespace) {
-        nsp.clients((err: any, clients: []) => {
-            if (err) throw err;
-            console.log(clients)
-            nsp.emit(ChatEvent.MEMBERLIST, clients);
-        })
+        const members = Object.values(nsp.connected).map(s => s.session.username)
+        if (members.length > 0) {
+            const memberAvatars = await getRepository(User)
+                .createQueryBuilder('user')
+                .select(['user.avatarURL', 'user.username'])
+                .where('user.username IN (:...names)', { names: members })
+                .getMany()
+
+            console.log(memberAvatars)
+
+            return nsp.emit(ChatEvent.MEMBERLIST, memberAvatars);
+        } else {
+            return nsp.emit(ChatEvent.MEMBERLIST, [])
+        }
+    }
+
+    private async getProfile(id: string) {
+        const memberAvatars = await getRepository(User)
+            .createQueryBuilder('user')
+            .select('user.avatarURL')
+            .where('user.id = :id', { id: id })
+            .getOne()
+
+        console.log(memberAvatars)
+        return memberAvatars!.avatarURL;
     }
 }

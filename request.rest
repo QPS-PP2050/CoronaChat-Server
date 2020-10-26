@@ -4,13 +4,12 @@ GET https://localhost:8080/api/users
 ###
 
 // Register request
-POST https://localhost:8080/api/users/register
+POST https://localhost:8080/api/users/
 Content-Type: application/json
 
 {
-    "username": "testing",
-    "email": "louis@hotmail.com",
-    "password": "testPassword"
+    "email": "louisM@gmail.com",
+    "password": "passWord123"
 }
 
 ###
@@ -20,6 +19,36 @@ POST https://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
-    "email": "louis@hotmail.com",
-    "password": "testPassword"
+    "email": "louis1@gmail.com",
+    "password": "testingPassword"
+}
+
+###
+
+// Change username request ('id' will vary)
+PATCH https://localhost:8080/api/users/13173988394139648
+Content-Type: application/json
+
+{ 
+    "username": "louistest"
+}
+
+###
+
+// Change password request ('id' will vary)
+PATCH https://localhost:8080/api/users/13173988394139648
+Content-Type: application/json
+
+{ 
+    "password": "testingPassword"
+}
+
+###
+
+// Change email request ('id' will vary) 
+PATCH https://localhost:8080/api/users/13173988394139648
+Content-Type: application/json
+
+{ 
+    "email": "louis1@gmail.com"
 }
