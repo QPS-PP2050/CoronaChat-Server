@@ -10,17 +10,18 @@ import type { Application } from 'express';
 
 export class Api {
 
-    private app: Application;
+	private app: Application;
 
-    public constructor(app: Application) {
-        this.app = app;
-        this.app.use(bodyParser.json());
-        // this.app.use(cors());
-        this.app.use(helmet());
+	public constructor(app: Application) {
+		this.app = app;
+		this.app.use(bodyParser.json());
+		// this.app.use(cors());
+		this.app.use(helmet());
 
-        this.app.use('/api', users);
-        this.app.use('/api', servers);
-        this.app.use('/api', channels);
-        console.log("api online")
-    }
+		this.app.use('/api', users);
+		this.app.use('/api', servers);
+		this.app.use('/api', channels);
+		console.log('api online');
+	}
+
 }

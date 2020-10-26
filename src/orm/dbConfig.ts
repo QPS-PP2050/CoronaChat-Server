@@ -3,34 +3,34 @@ import { ConnectionOptions, Connection, getConnection, createConnection } from '
 import { join } from 'path';
 
 export const config: ConnectionOptions = {
-    type: "postgres",
-    host: PGSQL_DATABASE_HOST,
-    port: PGSQL_DATABASE_PORT,
-    username: PGSQL_DATABASE_USER,
-    password: PGSQL_DATABASE_PASSWORD,
-    database: PGSQL_DATABASE_NAME,
-    synchronize: DEV,
-    logging: DEV,
-    entities: [
-        join(__dirname, 'entities/*.js')
-    ],
-    migrations: [
-        join(__dirname, 'migrations/*.js')
-    ],
-    subscribers: [
-        join(__dirname, 'subscriber/*.js')
-    ],
-    cli: {
-        entitiesDir: "src/orm/entities",
-        migrationsDir: "src/orm/migrations",
-        subscribersDir: "src/orm/subscriber"
-    }
-}
+	type: 'postgres',
+	host: PGSQL_DATABASE_HOST,
+	port: PGSQL_DATABASE_PORT,
+	username: PGSQL_DATABASE_USER,
+	password: PGSQL_DATABASE_PASSWORD,
+	database: PGSQL_DATABASE_NAME,
+	synchronize: DEV,
+	logging: DEV,
+	entities: [
+		join(__dirname, 'entities/*.js')
+	],
+	migrations: [
+		join(__dirname, 'migrations/*.js')
+	],
+	subscribers: [
+		join(__dirname, 'subscriber/*.js')
+	],
+	cli: {
+		entitiesDir: 'src/orm/entities',
+		migrationsDir: 'src/orm/migrations',
+		subscribersDir: 'src/orm/subscriber'
+	}
+};
 
 export const connect = (): Promise<Connection> => {
-    try {
-        return Promise.resolve(getConnection());
-    } catch {
-        return createConnection(config);
-    }
+	try {
+		return Promise.resolve(getConnection());
+	} catch {
+		return createConnection(config);
+	}
 };
