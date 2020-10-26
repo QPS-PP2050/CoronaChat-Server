@@ -16,7 +16,7 @@
         "test": "ts-mocha tests/**/*.test.ts --exit",
         "test:coverage": "nyc --reporter=lcov --reporter=text yarn test",
         "typeorm": "node -r module-alias/register ./node_modules/typeorm/cli.js",
-        "ssl": "openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert"
+        "ssl": "mkdir ssl && openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",

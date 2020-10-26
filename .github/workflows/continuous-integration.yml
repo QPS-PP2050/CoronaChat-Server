@@ -49,6 +49,7 @@ jobs:
       - name: Compile TypeScript & Start server
         run: | 
           yarn build
+          yarn ssl
           yarn start & npx wait-on https://127.0.0.1:8080
         env: 
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
