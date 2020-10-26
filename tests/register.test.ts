@@ -20,7 +20,7 @@ describe('Register API', () => {
 		return expect(res.status).to.equal(202);
 	});
 
-	it('Should register a new user and return 400', async () => {
+	it('Should fail to register a new user and return 400', async () => {
 		const res = await fetch('https://localhost:8080/api/users', {
 			method: 'POST',
 			body: JSON.stringify(registrationDetails),
