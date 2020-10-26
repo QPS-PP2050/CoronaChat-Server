@@ -84,8 +84,6 @@ jobs:
           popd
       - name: Compile TypeScript
         uses: icrawl/action-tsc@v1
-        with:
-          build: src
 
   Upload_Coverage_Report:
     name: Upload coverage report to coveralls
