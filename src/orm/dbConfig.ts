@@ -1,16 +1,28 @@
-import { DEV, PGSQL_DATABASE_HOST, PGSQL_DATABASE_NAME, PGSQL_DATABASE_PASSWORD, PGSQL_DATABASE_PORT, PGSQL_DATABASE_USER } from '@root/config';
 import { ConnectionOptions, Connection, getConnection, createConnection } from 'typeorm';
 import { join } from 'path';
+import dotEnvExtended from 'dotenv-extended';
+const dotenvParseVariables = require('dotenv-parse-variables');
+
+interface EnvConfig {
+    DATABASE_HOST: string;
+    DATABASE_PORT: number;
+    DATABASE_USER: string;
+    DATABASE_PASSWORD: string;
+    DATABASE_NAME: string;
+    DEV: boolean;
+}
+
+const envConfig: EnvConfig = dotenvParseVariables(dotEnvExtended.load()) as any;
 
 export const config: ConnectionOptions = {
 	type: 'postgres',
-	host: PGSQL_DATABASE_HOST,
-	port: PGSQL_DATABASE_PORT,
-	username: PGSQL_DATABASE_USER,
-	password: PGSQL_DATABASE_PASSWORD,
-	database: PGSQL_DATABASE_NAME,
-	synchronize: DEV,
-	logging: DEV,
+	host: envConfig.DATABASE_HOST,
+	port: envConfig.DATABASE_PORT,
+	username: envConfig.DATABASE_USER,
+	password: envConfig.DATABASE_PASSWORD,
+	database: envConfig.DATABASE_NAME,
+	synchronize: envConfig.DEV,
+	logging: envConfig.DEV,
 	entities: [
 		join(__dirname, 'entities/*.js')
 	],
