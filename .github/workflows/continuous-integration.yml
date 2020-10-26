@@ -30,6 +30,7 @@ jobs:
 
   Testing:
     name: Unit Tests
+    needs: [Building]
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
@@ -46,44 +47,19 @@ jobs:
           key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn --frozen-lockfile
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd
+      - name: Compile TypeScript
+        uses: icrawl/action-tsc@v1
       - name: Run tests
-        run: yarn test --coverage
+        run: |
+          node dist/index.js &
+          npx wait-on https://localhost:8080 &&
+          yarn test:coverage
+          kill -9 `lsof -i:8080 -t`
       - name: Store code coverage report
         uses: actions/upload-artifact@v2
         with:
           name: coverage
           path: coverage/
-
-  Building:
-    name: Compile source code
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@v2
-      - name: Use Node.js 14
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - name: Restore CI Cache
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies
-        run: yarn --ignore-scripts --frozen-lockfile
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd
-      - name: Compile TypeScript
-        uses: icrawl/action-tsc@v1
 
   Upload_Coverage_Report:
     name: Upload coverage report to coveralls
