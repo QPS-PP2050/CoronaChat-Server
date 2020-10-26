@@ -10,26 +10,24 @@ const registrationDetails = {
 
 describe('Register API', () => {
 	
-	it('Should register a new user and return 201', async () => {
-		const res = await fetch('https://8080-f7ed42e4-f722-4449-94c1-e2f12023b2af.ws-us02.gitpod.io/api/users', {
+	it('Should register a new user and return 202', async () => {
+		const res = await fetch('https://localhost:8080/api/users', {
 			method: 'POST',
 			body: JSON.stringify(registrationDetails),
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be(201);
-		return res;
+		return expect(res.status).to.be.equal(202);
 	});
 
 	it('Should register a new user and return 400', async () => {
-		const res = await fetch('https://8080-f7ed42e4-f722-4449-94c1-e2f12023b2af.ws-us02.gitpod.io/api/users', {
+		const res = await fetch('https://localhost:8080/api/users', {
 			method: 'POST',
 			body: JSON.stringify(registrationDetails),
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be(400);
-		return res;
+		return expect(res.status).to.be.equal(400);
 	});
 
 });

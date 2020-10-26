@@ -15,6 +15,6 @@ describe('Login API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.be(200);
+		expect(res.status).to.be.equal(200);
 	});
 });
