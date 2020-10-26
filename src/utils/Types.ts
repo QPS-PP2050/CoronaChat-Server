@@ -1,45 +1,45 @@
 export interface ChatMessage {
-    channel: string;
-    author: string;
-    message: string;
+	channel: string;
+	author: string;
+	message: string;
 }
 
 export interface Session {
-    id: number;
-    username: string;
-    /**
+	id: number;
+	username: string;
+	/**
      * Timestamp indicating when the session was created, in Unix milliseconds.
      */
-    issued: number;
-    /**
+	issued: number;
+	/**
      * Timestamp indicating when the session should expire, in Unix milliseconds.
-     */ 
-    expires: number;
+     */
+	expires: number;
 }
 
 /**
  * Identical to the Session type, but without the `issued` and `expires` properties.
  */
-export type PartialSession = Omit<Session, "issued" | "expires">;
+export type PartialSession = Omit<Session, 'issued' | 'expires'>;
 
 export interface EncodeResult {
-    token: string,
-    id: number,
-    username: string,
-    expires: number,
-    issued: number
+	token: string;
+	id: number;
+	username: string;
+	expires: number;
+	issued: number;
 }
 
 export type DecodeResult =
     | {
-          type: "valid";
-          session: Session;
-      }
+    	type: 'valid';
+    	session: Session;
+    }
     | {
-          type: "integrity-error";
-      }
+    	type: 'integrity-error';
+    }
     | {
-          type: "invalid-token";
-      };
+    	type: 'invalid-token';
+    };
 
-export type ExpirationStatus = "expired" | "active" | "grace";
+export type ExpirationStatus = 'expired' | 'active' | 'grace';

@@ -1,6 +1,8 @@
-import {PrimaryColumn} from "typeorm";
+import { PrimaryColumn } from 'typeorm';
 
 export abstract class Structure {
-    @PrimaryColumn("text")
-    id!: string;
+
+	@PrimaryColumn('text')
+	id!: string;
+
 }
