@@ -46,13 +46,15 @@ jobs:
           key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn --frozen-lockfile
-      - name: Compile TypeScript
-        run: yarn build
+      - name: Compile TypeScript & Start server
+        run: | 
+          yarn build
+          yarn start & npx wait-on https://localhost:8080
       - name: Run tests
         run: |
-          yarn start &
-          npx wait-on https://localhost:8080 && yarn test:coverage
-          kill -9 `lsof -i:8080 -t`
+          yarn test:coverage
+      - name: Stop server
+        run: kill -9 `lsof -i:8080 -t`
       - name: Store code coverage report
         uses: actions/upload-artifact@v2
         with:

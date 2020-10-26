@@ -2,7 +2,7 @@ import { ConnectionOptions, Connection, getConnection, createConnection } from '
 import { join } from 'path';
 
 export const config: ConnectionOptions = {
-    type: 'postgres',
+	type: 'postgres',
 	host: process.env.DATABASE_HOST,
 	port: parseInt(process.env.DATABASE_PORT!, 10),
 	username: process.env.DATABASE_USER,
