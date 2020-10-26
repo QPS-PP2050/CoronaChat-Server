@@ -69,13 +69,12 @@ router.post('/users', async (req, res) => {
 			newUser.avatarURL = `https://www.gravatar.com/avatar/${hash(newUser.email.trim().toLowerCase())}&d=retro`;
 			await connection.manager.save(newUser);
 
-			await setupUser(req, newUser);
-
 			/*
                         A 201 success status code will be sent along with a message
                         telling the user that the account was successfully created.
                     */
-			res.status(201).json(classToPlain(newUser));
+			res.status(202).json(classToPlain(newUser));
+			await setupUser(req, newUser);
 		} catch (err) {
 			console.log(err);
 		}
