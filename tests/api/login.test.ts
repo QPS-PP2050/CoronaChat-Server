@@ -20,7 +20,7 @@ describe('Login API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.equal(200);
+		expect(res.status, `Fail (${res.status}): ${(await res.json()).reason}`).to.equal(200);
     });
     
     it('Should fail to login and return 401', async () => {
@@ -30,6 +30,6 @@ describe('Login API', () => {
 			headers: { 'Content-type': 'application/json' },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.equal(401);
+		expect(res.status, `Fail (${res.status}): ${(await res.json()).reason}`).to.equal(401);
 	});
 });

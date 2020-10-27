@@ -39,6 +39,6 @@ describe('Change Password API', () => {
             },
 			agent: new Agent({ rejectUnauthorized: false })
 		});
-		expect(res.status).to.equal(201);
+		expect(res.status, `Fail (${res.status}): ${(await res.json()).reason}`).to.equal(201);
 	});
 });
