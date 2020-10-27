@@ -46,13 +46,19 @@ jobs:
           key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn --frozen-lockfile
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd
+      - name: Compile TypeScript & Start Server & Run Tests
+        run: | 
+          yarn build
+          yarn ssl
+          yarn start & npx wait-on tcp:8080
+        env: 
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
       - name: Run tests
-        run: yarn test --coverage
+        run: |
+          yarn test:coverage
+      - name: Stop server
+        run: kill -9 `lsof -i:8080 -t`
       - name: Store code coverage report
         uses: actions/upload-artifact@v2
         with:
@@ -77,11 +83,6 @@ jobs:
           key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn --ignore-scripts --frozen-lockfile
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd
       - name: Compile TypeScript
         uses: icrawl/action-tsc@v1
 
