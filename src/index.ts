@@ -1,5 +1,8 @@
 import 'reflect-metadata';
 import 'module-alias/register';
+import dotEnvExtended from 'dotenv-extended';
+
+dotEnvExtended.load();
 
 import { connect } from './orm/dbConfig';
 import { HttpsServer } from './https';

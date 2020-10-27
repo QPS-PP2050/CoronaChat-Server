@@ -1,16 +1,15 @@
-import { DEV, PGSQL_DATABASE_HOST, PGSQL_DATABASE_NAME, PGSQL_DATABASE_PASSWORD, PGSQL_DATABASE_PORT, PGSQL_DATABASE_USER } from '@root/config';
 import { ConnectionOptions, Connection, getConnection, createConnection } from 'typeorm';
 import { join } from 'path';
 
 export const config: ConnectionOptions = {
 	type: 'postgres',
-	host: PGSQL_DATABASE_HOST,
-	port: PGSQL_DATABASE_PORT,
-	username: PGSQL_DATABASE_USER,
-	password: PGSQL_DATABASE_PASSWORD,
-	database: PGSQL_DATABASE_NAME,
-	synchronize: DEV,
-	logging: DEV,
+	host: process.env.DATABASE_HOST,
+	port: parseInt(process.env.DATABASE_PORT!, 10),
+	username: process.env.DATABASE_USER,
+	password: process.env.DATABASE_PASSWORD,
+	database: process.env.DATABASE_NAME,
+	synchronize: (process.env.DEV === 'true'),
+	logging: (process.env.DEV === 'true'),
 	entities: [
 		join(__dirname, 'entities/*.js')
 	],
