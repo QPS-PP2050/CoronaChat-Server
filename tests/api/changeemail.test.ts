@@ -46,7 +46,7 @@ describe('Change Email API', () => {
     });
     
     after(async () => {
-        const res = await fetch('https://localhost:8080/api/users/${session.id}', {
+        const res = await fetch(`https://localhost:8080/api/users/${session.id}`, {
             method: 'DELETE',
             headers: { 
                 'Content-type': 'application/json',
