@@ -20,7 +20,7 @@ describe('Change Email API', () => {
 
     let session: EncodeResult;
 
-    it('Should login, retrieve a session token and return 200', async () => {
+    before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
             method: 'POST',
             body: JSON.stringify(userDetails),
@@ -28,7 +28,6 @@ describe('Change Email API', () => {
             agent: new Agent({ rejectUnauthorized: false })
         });
         session = await res.json();
-        expect(res.status).to.equal(200);
     })
 
     it('Should change an existing users password and return 201', async () => {

@@ -8,8 +8,8 @@ export const config: ConnectionOptions = {
 	username: process.env.DATABASE_USER,
 	password: process.env.DATABASE_PASSWORD,
 	database: process.env.DATABASE_NAME,
-	synchronize: process.env.DEV as unknown as boolean,
-	logging: process.env.DEV as unknown as boolean,
+	synchronize: (process.env.DEV === "true"),
+	logging: (process.env.DEV === "true"),
 	entities: [
 		join(__dirname, 'entities/*.js')
 	],
