@@ -46,11 +46,11 @@ jobs:
           key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn --frozen-lockfile
-      - name: Compile TypeScript & Start server
+      - name: Compile TypeScript & Start Server & Run Tests
         run: | 
           yarn build
           yarn ssl
-          yarn start & npx wait-on https://127.0.0.1:8080
+          yarn start & npx wait-on tcp:8080
         env: 
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
