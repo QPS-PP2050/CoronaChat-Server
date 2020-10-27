@@ -13,7 +13,7 @@ const userDetails = {
 };
 
 const updatedUsername = {
-    username: `test${Math.round(seconds)}`
+    username: `testuser${Math.round(seconds)}`
 };
 
 let session: EncodeResult;
