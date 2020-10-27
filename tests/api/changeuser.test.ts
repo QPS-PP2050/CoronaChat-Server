@@ -16,8 +16,9 @@ const updatedUsername = {
     username: `test${Math.round(seconds)}`
 };
 
+let session: EncodeResult;
+
 describe('Change Username API', () => {
-    let session: EncodeResult;
 
     before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
@@ -26,7 +27,8 @@ describe('Change Username API', () => {
             headers: { 'Content-type': 'application/json' },
             agent: new Agent({ rejectUnauthorized: false })
         });
-        session = await res.json();
+        const result = await res.json();
+        session = result.session;
     })
 
     it('Should change an existing users username and return 201', async () => {

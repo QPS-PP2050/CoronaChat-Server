@@ -13,9 +13,9 @@ const changeUserDetails = {
 	password: 'password123'
 };
 
-describe('Change Password API', () => {
+let session: EncodeResult;
 
-    let session: EncodeResult;
+describe('Change Password API', () => {
 
     before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
@@ -24,7 +24,8 @@ describe('Change Password API', () => {
             headers: { 'Content-type': 'application/json' },
             agent: new Agent({ rejectUnauthorized: false })
         });
-        session = await res.json();
+        const result = await res.json();
+        session = result.session;
     })
 
 	it('Should change an existing users password and return 201', async () => {

@@ -16,9 +16,9 @@ const changeUserDetails = {
     email: `test${seconds}@test.com`
 };
 
-describe('Change Email API', () => {
+let session: EncodeResult;
 
-    let session: EncodeResult;
+describe('Change Email API', () => {
 
     before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
@@ -27,7 +27,8 @@ describe('Change Email API', () => {
             headers: { 'Content-type': 'application/json' },
             agent: new Agent({ rejectUnauthorized: false })
         });
-        session = await res.json();
+        const result = await res.json();
+        session = result.session;
     })
 
     it('Should change an existing users password and return 201', async () => {
