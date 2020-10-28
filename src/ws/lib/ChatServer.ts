@@ -8,10 +8,12 @@ import * as socketIO from 'socket.io';
 import type { Server as httpsServer } from 'https';
 import type { Server as httpServer } from 'http';
 import type { ChatMessage, Session } from '@utils/Types';
+import { WebRTC } from '@root/webrtc';
 
 declare module 'socket.io' {
 	interface Socket {
 		room: string;
+		room_id: string | '';
 		session: Session;
 	}
 }
@@ -21,10 +23,12 @@ export class ChatServer {
 	private server: httpsServer | httpServer;
 	private port: string | number;
 	private io!: SocketIO.Server;
+	private voice: WebRTC;
 
 	public constructor(server: httpsServer | httpServer) {
 		this.server = server;
 		this.port = HttpsServer.PORT;
+		this.voice = new WebRTC();
 		this.initSocket();
 		this.listen();
 	}
@@ -54,6 +58,14 @@ export class ChatServer {
 			socket.on(ChatEvent.DISCONNECT, () => {
 				console.log('Client disconnected');
 			});
+		});
+
+		const voice = this.io.of('/voice');
+		voice.on(ChatEvent.CONNECT, async socket => {
+			this.voice.handleSignal(socket);
+		});
+		voice.use((socket, next) => {
+			next();
 		});
 
 		const servers = this.io.of(/^\/\d+$/);
