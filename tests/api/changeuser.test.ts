@@ -22,7 +22,7 @@ describe('Change Username API', () => {
 
     before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(userDetails),
             headers: { 'Content-type': 'application/json' },
             agent: new Agent({ rejectUnauthorized: false })
