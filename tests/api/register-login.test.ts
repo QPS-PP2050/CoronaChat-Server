@@ -7,7 +7,7 @@ var seconds = Math.round(date.getTime() / 1000);
 
 const userDetails = {
 	email: `test${seconds}@test.com`,
-	username: 'testuser',
+	username: `testuser${seconds}`,
 	password: 'password123'
 };
 
