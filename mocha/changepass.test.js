@@ -7,7 +7,7 @@ let changeUserDetails = {
     "password": "louismanabat123"
 }
 
-describe('Login API', function() {
+describe('Change Password API', function() {
     it('Should change an existing users password and return 201', async function() {
         const res = await fetch('https://localhost:8080/api/users/changepassword', {
             method: 'POST',

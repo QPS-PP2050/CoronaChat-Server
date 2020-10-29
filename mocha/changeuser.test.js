@@ -10,7 +10,7 @@ let changeUserDetails = {
     "username": "louismanabat" + Math.round(seconds)
 }
 
-describe('Login API', function() {
+describe('Change Username API', function() {
     it('Should change an existing users username and return 201', async function() {
         const res = await fetch('https://localhost:8080/api/users/changeusername', {
             method: 'POST',
