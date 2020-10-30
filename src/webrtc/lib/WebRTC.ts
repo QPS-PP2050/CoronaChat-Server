@@ -43,14 +43,16 @@ export class WebRTC {
 	}
 
 	public handleSignal(socket: Socket) {
-		socket.on('createRoom', ({ room_id }) => {
+		socket.on('createRoom', ({ room_id }, cb) => {
 			console.log('test');
 			if (this.roomList.has(room_id)) {
-				console.log('fail');
+                console.log('fail');
+                cb('room exists already')
 			} else {
 				console.log('---created room--- ', room_id);
 				let worker = this.getMediasoupWorker();
-				this.roomList.set(room_id, new Room(room_id, worker, socket));
+                this.roomList.set(room_id, new Room(room_id, worker, socket));
+                cb('room created')
 			}
 		});
 
@@ -58,7 +60,6 @@ export class WebRTC {
 			room_id,
 			name
 		}, cb) => {
-
 			console.log(`---user joined--- \"${room_id}\": ${name}`);
 			if (!this.roomList.has(room_id)) {
 				return cb({
@@ -68,10 +69,11 @@ export class WebRTC {
 			this.roomList.get(room_id)!.addPeer(new Peer(socket.id, name));
 			socket.room_id = room_id;
 
-			// cb(this.roomList.get(room_id)!.toJson());
+			cb(this.roomList.get(room_id)!.toJson());
 		});
 
 		socket.on('getProducers', () => {
+            console.log(this.roomList.get(socket.room_id)!.getPeers())
 			console.log(`---get producers--- name:${this.roomList.get(socket.room_id)!.getPeers().get(socket.id)!.name}`);
 			// send all the current producer to newly joined member
 			if (!this.roomList.has(socket.room_id)) return;
@@ -81,7 +83,7 @@ export class WebRTC {
 		});
 
 		socket.on('getRouterRtpCapabilities', (_, callback) => {
-			console.log(`---get RouterRtpCapabilities--- name: ${this.roomList.get(socket.room_id)!.getPeers().get(socket.id)!.name}`);
+			console.log(`---get RouterRtpCapabilities--- name: ${this.roomList.get(socket.room_id)!.getPeers().get(socket.id)!.id}`);
 			try {
 				callback(this.roomList.get(socket.room_id)!.getRtpCapabilities());
 			} catch (e) {
@@ -98,7 +100,6 @@ export class WebRTC {
 				const {
 					params
 				} = await this.roomList.get(socket.room_id)!.createWebRtcTransport(socket.id);
-
 				callback(params);
 			} catch (err) {
 				console.error(err);
