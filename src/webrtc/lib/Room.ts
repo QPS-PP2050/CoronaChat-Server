@@ -31,6 +31,7 @@ export class Room {
 
 	public getProducerListForPeer() {
 		let producerList: Record<string, unknown>[] = [];
+		console.log(this.peers)
 		this.peers.forEach(peer => {
 			peer.producers.forEach(producer => {
 				producerList.push({

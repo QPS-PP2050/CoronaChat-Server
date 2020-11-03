@@ -34,10 +34,9 @@ export class HttpsServer {
 
 	private static getOptions(): ServerOptions {
 		const env = process.env.NODE_ENV || 'development';
-		console.log(join(process.cwd(), '/ssl/dev.cert'));
 		return env === 'development'
 			? {
-				cert: readFileSync(join(process.cwd(), '/ssl/dev.cert')),
+				cert: readFileSync(join(process.cwd(), 'ssl/dev.cert')),
 				key: readFileSync(join(process.cwd(), 'ssl/dev.key'))
 			}
 			: {

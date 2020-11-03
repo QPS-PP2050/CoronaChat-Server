@@ -68,8 +68,8 @@ export const config: MediaSoupConfig = {
 		webRtcTransport: {
 			listenIps: [
 				{
-					ip: '0.0.0.0',
-					announcedIp: '34.83.250.16' // replace by public IP address
+					ip: '192.168.20.200',
+					//announcedIp: '192.168.20.200' // replace by public IP address
 				}
 			],
 			initialAvailableOutgoingBitrate: 1000000
