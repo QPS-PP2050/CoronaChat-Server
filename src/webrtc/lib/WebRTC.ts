@@ -46,13 +46,13 @@ export class WebRTC {
 		socket.on('createRoom', ({ room_id }, cb) => {
 			console.log('test');
 			if (this.roomList.has(room_id)) {
-                console.log('fail');
-                cb('room exists already')
+				console.log('fail');
+				cb('room exists already');
 			} else {
 				console.log('---created room--- ', room_id);
 				let worker = this.getMediasoupWorker();
-                this.roomList.set(room_id, new Room(room_id, worker, socket));
-                cb('room created')
+				this.roomList.set(room_id, new Room(room_id, worker, socket));
+				cb('room created');
 			}
 		});
 
@@ -73,7 +73,7 @@ export class WebRTC {
 		});
 
 		socket.on('getProducers', () => {
-            console.log(this.roomList.get(socket.room_id)!.getPeers())
+			console.log(this.roomList.get(socket.room_id)!.getPeers());
 			console.log(`---get producers--- name:${this.roomList.get(socket.room_id)!.getPeers().get(socket.id)!.name}`);
 			// send all the current producer to newly joined member
 			if (!this.roomList.has(socket.room_id)) return;

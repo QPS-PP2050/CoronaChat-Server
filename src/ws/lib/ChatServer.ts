@@ -61,7 +61,7 @@ export class ChatServer {
 		});
 
 		const voice = this.io.of('/voice');
-		voice.on(ChatEvent.CONNECT, async socket => {
+		voice.on(ChatEvent.CONNECT, socket => {
 			this.voice.handleSignal(socket);
 		});
 		voice.use((socket, next) => {
