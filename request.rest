@@ -42,13 +42,3 @@ Content-Type: application/json
 { 
     "password": "testingPassword"
 }
-
-###
-
-// Change email request ('id' will vary) 
-PATCH https://localhost:8080/api/users/13173988394139648
-Content-Type: application/json
-
-{ 
-    "email": "louis1@gmail.com"
-}
