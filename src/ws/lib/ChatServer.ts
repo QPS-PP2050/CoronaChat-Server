@@ -49,10 +49,10 @@ export class ChatServer {
 			const serverList = await this.updateServers(socket.session.id);
 			socket.emit('servers', serverList);
 
-			socket.on('direct-message', async (data: any) => {
+			socket.on('direct-message', (data: any) => {
 				if (socket.session.username !== data.recipient) return;
-				this.io.emit('direct-message', data)
-			})
+				this.io.emit('direct-message', data);
+			});
 
 			socket.on('invite-user', async (data: any) => {
 				if (socket.session.username !== data.username) return;
