@@ -16,7 +16,7 @@
         "test": "ts-mocha tests/index.ts --exit",
         "test:coverage": "nyc --reporter=lcov --reporter=text yarn test",
         "typeorm": "node -r module-alias/register ./node_modules/typeorm/cli.js",
-        "ssl": "mkdir ssl && openssl req -nodes -x509 -subj '/CN=localhost' -keyout ./ssl/dev.key -out ./ssl/dev.cert"
+        "ssl": "mkdir ssl && openssl req -x509 -nodes -days 365 -subj '/CN=localhost' -newkey rsa:2048 -keyout ./ssl/dev.key -out ./ssl/dev.cert"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",
@@ -26,6 +26,7 @@
         "express": "^4.17.1",
         "helmet": "^4.1.1",
         "jwt-simple": "^0.5.6",
+        "mediasoup": "^3.6.24",
         "module-alias": "^2.2.2",
         "pg": "^8.3.3",
         "reflect-metadata": "^0.1.10",
