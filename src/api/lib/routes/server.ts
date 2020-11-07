@@ -94,7 +94,7 @@ router.patch('/servers/:serverId/members', authorization, async (req, res) => {
 		}) as Server;
 
 	const position = server.members.indexOf(user);
-	server.members.splice(position, 1)
+	server.members.splice(position, 1);
 	await getRepository(Server)
 		.save(server);
 

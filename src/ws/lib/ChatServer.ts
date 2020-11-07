@@ -94,7 +94,7 @@ export class ChatServer {
 			socket.on(ChatEvent.CHANNEL_UPDATE, async () => {
 				const channelList = await this.updateChannels(server);
 				server.emit(ChatEvent.CHANNEL, channelList);
-			})
+			});
 
 			socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
 				console.log(channelID);
