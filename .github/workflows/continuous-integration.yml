@@ -50,6 +50,7 @@ jobs:
         run: | 
           yarn build
           yarn ssl
+          yarn typeorm schema:drop
           yarn start & npx wait-on tcp:8080
         env: 
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
