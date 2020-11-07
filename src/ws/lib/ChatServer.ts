@@ -74,23 +74,21 @@ export class ChatServer {
 			const server = socket.nsp;
 			console.log('Connected client to namespace %s.', server.name);
 
-			const channels = await getRepository(Channel).find({
-				select: ['id', 'name', 'type'],
-				where: {
-					server: server.name.split('/')[1]
-				}
-			});
+			const channelList = await this.updateChannels(server);
 
-			channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
+			socket.emit(ChatEvent.CHANNEL, channelList);
 
-			socket.emit(ChatEvent.CHANNEL, channels);
-
-			const generalChannel = channels.find(c => c.name === 'general')!.id;
+			const generalChannel = channelList.find(c => c.name === 'general')!.id;
 			socket.join(generalChannel, () => {
 				socket.room = generalChannel;
 			});
 			console.log(socket.rooms);
 			await this.updateMembers(server);
+
+			socket.on(ChatEvent.CHANNEL_UPDATE, async () => {
+				const channelList = await this.updateChannels(server);
+				server.emit(ChatEvent.CHANNEL, channelList);
+			})
 
 			socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
 				console.log(channelID);
@@ -116,6 +114,18 @@ export class ChatServer {
 		});
 	}
 
+	private async updateChannels(server: socketIO.Namespace) {
+		const channels = await getRepository(Channel).find({
+			select: ['id', 'name', 'type'],
+			where: {
+				server: server.name!.split('/')[1]
+			}
+		});
+
+		channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
+		return channels;
+	}
+
 	private async updateServers(userID: string) {
 		const servers = await getRepository(Server)
 			.createQueryBuilder('server')
@@ -129,15 +139,15 @@ export class ChatServer {
 	private async updateMembers(nsp: socketIO.Namespace) {
 		const members = Object.values(nsp.connected).map(s => s.session.username);
 		if (members.length > 0) {
-			const memberAvatars = await getRepository(User)
+			const memberList = await getRepository(User)
 				.createQueryBuilder('user')
-				.select(['user.avatarURL', 'user.username'])
+				.select(['user.avatarURL', 'user.username', 'user.id'])
 				.where('user.username IN (:...names)', { names: members })
 				.getMany();
 
-			console.log(memberAvatars);
+			console.log(memberList);
 
-			return nsp.emit(ChatEvent.MEMBERLIST, memberAvatars);
+			return nsp.emit(ChatEvent.MEMBERLIST, memberList);
 		}
 		return nsp.emit(ChatEvent.MEMBERLIST, []);
 
