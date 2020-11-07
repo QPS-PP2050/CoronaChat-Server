@@ -19,7 +19,7 @@ describe('Change Password API', () => {
 
     before(async () => {
         const res = await fetch('https://localhost:8080/api/users/login', {
-            method: 'PATCH',
+            method: 'POST',
             body: JSON.stringify(userDetails),
             headers: { 'Content-type': 'application/json' },
             agent: new Agent({ rejectUnauthorized: false })
