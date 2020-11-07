@@ -2,12 +2,9 @@ import fetch from 'node-fetch';
 import { Agent } from 'https';
 import { expect } from 'chai';
 
-var date = new Date();
-var seconds = Math.round(date.getTime() / 1000);
-
 const userDetails = {
-	email: `test${seconds}@test.com`,
-	username: `testuser${seconds}`,
+	email: `test@test.com`,
+	username: `testuser`,
 	password: 'password123'
 };
 
