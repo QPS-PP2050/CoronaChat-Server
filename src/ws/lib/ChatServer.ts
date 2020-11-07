@@ -55,6 +55,12 @@ export class ChatServer {
 				this.io.emit('servers', updatedServers);
 			});
 
+			socket.on('remove-user', async (data: any) => {
+				if (socket.session.username !== data.username) return;
+				const updatedServers = await this.updateServers(socket.session.id);
+				this.io.emit('servers', updatedServers);
+			});
+
 			socket.on(ChatEvent.DISCONNECT, () => {
 				console.log('Client disconnected');
 			});

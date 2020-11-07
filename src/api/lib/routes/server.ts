@@ -76,6 +76,32 @@ router.put('/servers/:serverId/members', authorization, async (req, res) => {
 	console.log(server);
 });
 
+router.patch('/servers/:serverId/members', authorization, async (req, res) => {
+	const serverID = req.params.serverId;
+	const { username } = req.body;
+
+	console.log(serverID);
+	const user = await getRepository(User)
+		.findOne({
+			where: {
+				username
+			}
+		}) as User;
+
+	const server = await getRepository(Server)
+		.findOne(serverID, {
+			relations: ['members']
+		}) as Server;
+
+	const position = server.members.indexOf(user);
+	server.members.splice(position, 1)
+	await getRepository(Server)
+		.save(server);
+
+	res.status(200).send({ ok: true, message: 'User removed from server' });
+	console.log(server);
+});
+
 /* router.patch('/servers/:serverId', authorization, async (req, res) => {
 	// Placeholder to RESET server
 
