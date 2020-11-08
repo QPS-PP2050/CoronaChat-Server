@@ -50,29 +50,29 @@ export class ChatServer {
 			socket.emit('servers', serverList);
 
 			socket.on('direct-message', (data: any) => {
-				const socketArray = Object.entries(this.io.sockets.connected)
-				socketArray.forEach(([id, socket]) => {
-					if (socket.session.id !== data.recipient) return;
+				const socketArray = Object.entries(this.io.sockets.connected);
+				socketArray.forEach(([, socket]) => {
+					if (socket.session.id !== data.recipient.toString()) return;
 					socket.emit('direct-message', data);
-				})
+				});
 			});
 
-			socket.on('invite-user', async (data: any) => {
-				const socketArray = Object.entries(this.io.sockets.connected)
-				socketArray.forEach(async ([id, socket]) => {
+			socket.on('invite-user', (data: any) => {
+				const socketArray = Object.entries(this.io.sockets.connected);
+				socketArray.forEach(async ([, socket]) => {
 					if (socket.session.username !== data.recipient) return;
 					const updatedServers = await this.updateServers(socket.session.id);
 					socket.emit('servers', updatedServers);
-				})
+				});
 			});
 
-			socket.on('remove-user', async (data: any) => {
-				const socketArray = Object.entries(this.io.sockets.connected)
-				socketArray.forEach(async ([id, socket]) => {
+			socket.on('remove-user', (data: any) => {
+				const socketArray = Object.entries(this.io.sockets.connected);
+				socketArray.forEach(async ([, socket]) => {
 					if (socket.session.username !== data.recipient) return;
 					const updatedServers = await this.updateServers(socket.session.id);
 					socket.emit('servers', updatedServers);
-				})
+				});
 			});
 
 			socket.on(ChatEvent.DISCONNECT, () => {
