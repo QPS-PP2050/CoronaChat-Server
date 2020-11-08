@@ -50,20 +50,29 @@ export class ChatServer {
 			socket.emit('servers', serverList);
 
 			socket.on('direct-message', (data: any) => {
-				if (socket.session.username !== data.recipient) return;
-				this.io.emit('direct-message', data);
+				const socketArray = Object.entries(this.io.sockets.connected)
+				socketArray.forEach(([id, socket]) => {
+					if (socket.session.username !== data.recipient) return;
+					socket.emit('direct-message', data);
+				})
 			});
 
 			socket.on('invite-user', async (data: any) => {
-				if (socket.session.username !== data.username) return;
-				const updatedServers = await this.updateServers(socket.session.id);
-				this.io.emit('servers', updatedServers);
+				const socketArray = Object.entries(this.io.sockets.connected)
+				socketArray.forEach(async ([id, socket]) => {
+					if (socket.session.username !== data.recipient) return;
+					const updatedServers = await this.updateServers(socket.session.id);
+					socket.emit('servers', updatedServers);
+				})
 			});
 
 			socket.on('remove-user', async (data: any) => {
-				if (socket.session.username !== data.username) return;
-				const updatedServers = await this.updateServers(socket.session.id);
-				this.io.emit('servers', updatedServers);
+				const socketArray = Object.entries(this.io.sockets.connected)
+				socketArray.forEach(async ([id, socket]) => {
+					if (socket.session.username !== data.recipient) return;
+					const updatedServers = await this.updateServers(socket.session.id);
+					socket.emit('servers', updatedServers);
+				})
 			});
 
 			socket.on(ChatEvent.DISCONNECT, () => {
@@ -137,7 +146,7 @@ export class ChatServer {
 		return channels;
 	}
 
-	private async updateServers(userID: string) {
+	private async updateServers(userID: number) {
 		const servers = await getRepository(Server)
 			.createQueryBuilder('server')
 			.leftJoinAndSelect('server.members', 'user')
