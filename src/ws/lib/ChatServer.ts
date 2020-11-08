@@ -52,7 +52,7 @@ export class ChatServer {
 			socket.on('direct-message', (data: any) => {
 				const socketArray = Object.entries(this.io.sockets.connected)
 				socketArray.forEach(([id, socket]) => {
-					if (socket.session.username !== data.recipient) return;
+					if (socket.session.id !== data.recipient) return;
 					socket.emit('direct-message', data);
 				})
 			});
