@@ -51,7 +51,7 @@ export class ChatServer {
 
 			socket.on('direct-message', (data: any) => {
 				const socketArray = Object.entries(this.io.sockets.connected);
-				console.log(data)
+				console.log(data);
 				socketArray.forEach(([, socket]) => {
 					if (socket.session.username !== data.recipient && socket.session.username !== data.sender) return;
 					socket.emit('direct-message', data);
