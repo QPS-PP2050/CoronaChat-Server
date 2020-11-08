@@ -66,7 +66,7 @@ router.post('/users', async (req, res) => {
 			newUser.password = hashedPassword;
 			newUser.email = req.body.email;
 			newUser.username = req.body.username;
-			newUser.avatarURL = `https://www.gravatar.com/avatar/${hash(newUser.email.trim().toLowerCase())}&d=retro`;
+			newUser.avatarURL = `https://www.gravatar.com/avatar/${hash(newUser.email.trim().toLowerCase())}?d=retro`;
 			await connection.manager.save(newUser);
 
 			/*

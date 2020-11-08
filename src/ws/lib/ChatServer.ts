@@ -49,10 +49,31 @@ export class ChatServer {
 			const serverList = await this.updateServers(socket.session.id);
 			socket.emit('servers', serverList);
 
-			socket.on('invite-user', async (data: any) => {
-				if (socket.session.username !== data.username) return;
-				const updatedServers = await this.updateServers(socket.session.id);
-				this.io.emit('servers', updatedServers);
+			socket.on('direct-message', (data: any) => {
+				const socketArray = Object.entries(this.io.sockets.connected);
+				console.log(data);
+				socketArray.forEach(([, socket]) => {
+					if (socket.session.username !== data.recipient && socket.session.username !== data.sender) return;
+					socket.emit('direct-message', data);
+				});
+			});
+
+			socket.on('invite-user', (data: any) => {
+				const socketArray = Object.entries(this.io.sockets.connected);
+				socketArray.forEach(async ([, socket]) => {
+					if (socket.session.username !== data.recipient) return;
+					const updatedServers = await this.updateServers(socket.session.id);
+					socket.emit('servers', updatedServers);
+				});
+			});
+
+			socket.on('remove-user', (data: any) => {
+				const socketArray = Object.entries(this.io.sockets.connected);
+				socketArray.forEach(async ([, socket]) => {
+					if (socket.session.username !== data.recipient) return;
+					const updatedServers = await this.updateServers(socket.session.id);
+					socket.emit('servers', updatedServers);
+				});
 			});
 
 			socket.on(ChatEvent.DISCONNECT, () => {
@@ -74,23 +95,21 @@ export class ChatServer {
 			const server = socket.nsp;
 			console.log('Connected client to namespace %s.', server.name);
 
-			const channels = await getRepository(Channel).find({
-				select: ['id', 'name', 'type'],
-				where: {
-					server: server.name.split('/')[1]
-				}
-			});
+			const channelList = await this.updateChannels(server);
 
-			channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
+			socket.emit(ChatEvent.CHANNEL, channelList);
 
-			socket.emit(ChatEvent.CHANNEL, channels);
-
-			const generalChannel = channels.find(c => c.name === 'general')!.id;
+			const generalChannel = channelList.find(c => c.name === 'general')!.id;
 			socket.join(generalChannel, () => {
 				socket.room = generalChannel;
 			});
 			console.log(socket.rooms);
 			await this.updateMembers(server);
+
+			socket.on(ChatEvent.CHANNEL_UPDATE, async () => {
+				const channelList = await this.updateChannels(server);
+				server.emit(ChatEvent.CHANNEL, channelList);
+			});
 
 			socket.on(ChatEvent.CHANNEL_CHANGE, (channelID: string) => {
 				console.log(channelID);
@@ -116,7 +135,19 @@ export class ChatServer {
 		});
 	}
 
-	private async updateServers(userID: string) {
+	private async updateChannels(server: socketIO.Namespace) {
+		const channels = await getRepository(Channel).find({
+			select: ['id', 'name', 'type'],
+			where: {
+				server: server.name!.split('/')[1]
+			}
+		});
+
+		channels.sort((a, b) => (a.type > b.type) ? 1 : ((b.type > a.type) ? -1 : 0));
+		return channels;
+	}
+
+	private async updateServers(userID: number) {
 		const servers = await getRepository(Server)
 			.createQueryBuilder('server')
 			.leftJoinAndSelect('server.members', 'user')
@@ -129,15 +160,15 @@ export class ChatServer {
 	private async updateMembers(nsp: socketIO.Namespace) {
 		const members = Object.values(nsp.connected).map(s => s.session.username);
 		if (members.length > 0) {
-			const memberAvatars = await getRepository(User)
+			const memberList = await getRepository(User)
 				.createQueryBuilder('user')
-				.select(['user.avatarURL', 'user.username'])
+				.select(['user.avatarURL', 'user.username', 'user.id'])
 				.where('user.username IN (:...names)', { names: members })
 				.getMany();
 
-			console.log(memberAvatars);
+			console.log(memberList);
 
-			return nsp.emit(ChatEvent.MEMBERLIST, memberAvatars);
+			return nsp.emit(ChatEvent.MEMBERLIST, memberList);
 		}
 		return nsp.emit(ChatEvent.MEMBERLIST, []);
 

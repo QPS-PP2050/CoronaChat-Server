@@ -5,7 +5,8 @@ export enum ChatEvent {
 	MEMBERLIST = 'member_list',
 	CHANNEL_CHANGE = 'change-channel',
 	SERVER = 'servers',
-	CHANNEL = 'channels'
+	CHANNEL = 'channels',
+	CHANNEL_UPDATE = 'update-channels'
 }
 
 export enum ChannelType {

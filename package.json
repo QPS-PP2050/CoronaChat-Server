@@ -1,6 +1,6 @@
 {
     "name": "coronachat-server",
-    "version": "0.0.1",
+    "version": "0.3.4",
     "description": "Secure Chat Server & Client Project for RMIT Capstone Project 1",
     "main": "src/index.js",
     "repository": "https://github.com/QPS-PP2050/CoronaChat-Server.git",
@@ -15,7 +15,7 @@
         "lint": "eslint --fix src --ext .ts",
         "test": "ts-mocha tests/index.ts --exit",
         "test:coverage": "nyc --reporter=lcov --reporter=text yarn test",
-        "typeorm": "node -r module-alias/register ./node_modules/typeorm/cli.js",
+        "typeorm": "node -r module-alias/register -r dotenv-extended/config ./node_modules/typeorm/cli.js",
         "ssl": "mkdir ssl && openssl req -x509 -nodes -days 365 -subj '/CN=localhost' -newkey rsa:2048 -keyout ./ssl/dev.key -out ./ssl/dev.cert"
     },
     "dependencies": {
